@@ -22,7 +22,14 @@ $plugins = $lists->get();
                 <strong><?php _e('Downloads:', 'sb-core'); ?></strong> <span title="<?php echo $info->downloaded; ?>"><?php echo number_format($info->downloaded, 0, '.', ','); ?></span>
             </div>
             <div class="row-updated">
-                <strong><?php _e('Last Updated:', 'sb-core'); ?></strong> <span title="<?php echo $info->last_updated; ?>"><?php echo date_format(new DateTime($info->last_updated), 'Y-m-d'); ?></span>
+                <?php
+                $date_format = get_option('date_format');
+                $date_format = str_replace('/', '-', $date_format);
+                if(empty($date_format)) {
+                    $date_format = 'Y-m-d';
+                }
+                ?>
+                <strong><?php _e('Last Updated:', 'sb-core'); ?></strong> <span title="<?php echo $info->last_updated; ?>"><?php echo date_format(new DateTime($info->last_updated), $date_format); ?></span>
             </div>
         </div>
     </div>

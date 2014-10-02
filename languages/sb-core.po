@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sb-core\n"
-"POT-Creation-Date: 2014-10-01 07:32+0700\n"
-"PO-Revision-Date: 2014-10-01 07:32+0700\n"
+"POT-Creation-Date: 2014-10-02 20:02+0700\n"
+"PO-Revision-Date: 2014-10-02 20:02+0700\n"
 "Last-Translator: SB Team <laidinhcuongvn@gmail.com>\n"
 "Language-Team: SB Team <laidinhcuongvn@gmail.com>\n"
 "Language: vi\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "About SB"
 msgstr ""
 
-#: ../admin/class-sb-admin.php:166
+#: ../admin/class-sb-admin.php:166 ../inc/sb-plugin-functions.php:43
 msgid "SB Options"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Downloads:"
 msgstr ""
 
-#: ../admin/sb-plugins-ajax.php:25
+#: ../admin/sb-plugins-ajax.php:32
 msgid "Last Updated:"
 msgstr ""
 
@@ -148,25 +148,122 @@ msgstr ""
 msgid "If you have any question, please send us an email via: %s"
 msgstr ""
 
-#: ../inc/class-sb-core.php:124
-msgid "comment"
+#: ../inc/class-sb-core.php:122
+#, php-format
+msgid "%d second ago"
 msgstr ""
 
-#: ../inc/class-sb-core.php:124
-msgid "comments"
+#: ../inc/class-sb-core.php:123
+#, php-format
+msgid "%d seconds ago"
 msgstr ""
 
-#: ../inc/class-sb-core.php:178
+#: ../inc/class-sb-core.php:126
+#, php-format
+msgid "%d minute ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:127
+#, php-format
+msgid "%d minutes ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:130
+#, php-format
+msgid "%d hour ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:131
+#, php-format
+msgid "%d hours ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:134
+#, php-format
+msgid "%d day ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:135
+#, php-format
+msgid "%d days ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:138
+#, php-format
+msgid "%d week ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:139
+#, php-format
+msgid "%d weeks ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:142
+#, php-format
+msgid "%d month ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:143
+#, php-format
+msgid "%d months ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:146
+#, php-format
+msgid "%d year ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:147
+#, php-format
+msgid "%d years ago"
+msgstr ""
+
+#: ../inc/class-sb-core.php:247
 msgid "Products List"
 msgstr ""
 
-#: ../inc/class-sb-core.php:180
+#: ../inc/class-sb-core.php:249
 #, php-format
 msgid "%s forum"
 msgstr ""
 
-#: ../inc/class-sb-core.php:230
+#: ../inc/class-sb-core.php:299
 msgid "This website is temporarily unavailable, please try again later."
+msgstr ""
+
+#: ../inc/class-sb-mail.php:25
+#, php-format
+msgid "Your comment on %s is approved"
+msgstr ""
+
+#: ../inc/class-sb-mail.php:26
+#, php-format
+msgid "Dear %s"
+msgstr ""
+
+#: ../inc/class-sb-mail.php:27
+#, php-format
+msgid ""
+"Your comment on %s is approved. You can click these links below for more "
+"detail."
+msgstr ""
+
+#: ../inc/class-sb-mail.php:28
+#, php-format
+msgid "Post link: %s"
+msgstr ""
+
+#: ../inc/class-sb-mail.php:29
+#, php-format
+msgid "Comment link: %s"
+msgstr ""
+
+#: ../inc/class-sb-post.php:115
+msgid "comment"
+msgstr ""
+
+#: ../inc/class-sb-post.php:115
+msgid "comments"
 msgstr ""
 
 #: ../inc/sb-plugin-functions.php:10
