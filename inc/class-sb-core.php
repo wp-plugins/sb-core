@@ -239,11 +239,19 @@ class SB_Core {
 
     public static function sanitize($data, $type) {
         switch($type) {
-            case "url":
+            case 'url':
                 $data = esc_url_raw($data);
-                if(!SB_PHP::is_valid_url($data) || !SB_PHP::is_valid_image($data)) {
+                if(!SB_PHP::is_valid_url($data)) {
                     $data = '';
                 }
+                return $data;
+            case 'image_url':
+                if(!SB_PHP::is_valid_image($data)) {
+                    $data = '';
+                }
+                return $data;
+            case 'text':
+                $data = sanitize_text_field($data);
                 return $data;
             default:
                 return $data;
@@ -364,6 +372,40 @@ class SB_Core {
             return true;
         }
         return false;
+    }
+
+    public static function build_widget_class($widget_id) {
+        $widget_class = explode('-', $widget_id);
+        array_pop($widget_class);
+        if(is_array($widget_class)) {
+            $widget_class = implode('-', $widget_class);
+        } else {
+            $widget_class = (string) $widget_class;
+        }
+        $widget_class = trim(trim(trim($widget_class, '_'), '-'));
+        $widget_class = "widget_".$widget_class;
+        return $widget_class;
+    }
+
+    public static function get_sidebar() {
+        global $wp_registered_sidebars;
+        return $wp_registered_sidebars;
+    }
+
+    public static function get_sidebar_by($key, $value) {
+        $sidebars = self::get_sidebar();
+        foreach ($sidebars as $id => $sidebar) {
+            switch ($key) {
+                default:
+                    if ($id == $value) return $sidebar;
+            }
+        }
+        return array();
+    }
+
+    public static function build_meta_box_field_name($name) {
+        $name = str_replace('sbmb_', '', $name);
+        return 'sbmb_' . $name;
     }
 
 }
