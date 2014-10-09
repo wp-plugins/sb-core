@@ -408,4 +408,23 @@ class SB_Core {
         return 'sbmb_' . $name;
     }
 
+    public static function register_sidebar($sidebar_id, $sidebar_name, $sidebar_description) {
+        if(!self::is_sidebar_exists($sidebar_id)) {
+            register_sidebar( array(
+                'name'          => $sidebar_name,
+                'id'            => $sidebar_id,
+                'description'   => __($sidebar_description, 'sb-theme'),
+                'before_widget' => '<section id="%1$s" class="widget %2$s">',
+                'after_widget'  => '</section>',
+                'before_title'  => '<h4 class="widget-title">',
+                'after_title'   => '</h4>',
+            ));
+        }
+    }
+
+    public static function is_sidebar_exists($sidebar_id) {
+        global $wp_registered_sidebars;
+        return array_key_exists($sidebar_id, $wp_registered_sidebars);
+    }
+
 }
