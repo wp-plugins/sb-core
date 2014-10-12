@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') OR exit;
-
 class SB_Post {
     public static function get_images($post_id) {
         $result = array();

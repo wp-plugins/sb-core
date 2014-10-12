@@ -1,5 +1,5 @@
 a.toplevel_page_sb_options .wp-menu-image {
-    background: url("images/sb-options-icon.png") no-repeat scroll center center transparent;
+    background: url("../images/sb-options-icon.png") no-repeat scroll center center transparent;
     opacity: 0.7;
 }
 
@@ -632,4 +632,10 @@ a:focus {
 
 .sb-sidebar-group .sb-sortable-list .ui-state-highlight {
     height: 35px;
+}
+
+.sb-default-sidebar > img.sb-icon-delete,
+.sb-default-sidebar > img.sb-icon-drag {
+    cursor: default;
+    opacity: 0.15;
 }

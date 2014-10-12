@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') OR exit;
-
 class SB_Option {
     public static function get_date_format() {
         return get_option('date_format');
