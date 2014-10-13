@@ -49,7 +49,7 @@ class SB_Post {
             }
         }
         if(empty($result)) {
-            $result = SB_CORE_ADMIN_URL . '/images/no-thumbnail-grey-100.png';
+            $result = SB_CORE_URL . '/images/no-thumbnail-grey-100.png';
         }
         return apply_filters('sb_thumbnail_url', $result);
     }
