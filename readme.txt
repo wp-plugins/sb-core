@@ -4,7 +4,7 @@ Donate link: http://hocwp.net/donate/
 Tags: sb, sb plugin, sb theme, sb team, sb core, sb options, wordpress options
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ SB Core is not only a plugin but also a framework, it contains core function for
 
 **Recommended WordPress Plugins**
 
+* [SB Banner Widget](https://wordpress.org/plugins/sb-banner-widget/)
 * [SB Clean](https://wordpress.org/plugins/sb-clean/)
 * [SB Comment](https://wordpress.org/plugins/sb-comment/)
 * [SB Paginate](https://wordpress.org/plugins/sb-paginate/)
@@ -55,6 +56,9 @@ Please visit [homepage](http://hocwp.net) for more details.
 Please update all SB Plugins after you updated SB Core.
 
 == Changelog ==
+
+= 1.0.8 =
+* New: Support SB Login Page.
 
 = 1.0.7 =
 * Bugs: Fix SB Core admin url.
