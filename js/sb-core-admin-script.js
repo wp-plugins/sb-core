@@ -1,9 +1,10 @@
 (function($){
+
     var sb_option = $('div.sb-option'),
         option_form = $('#sb-options-form'),
         fileFrame = null,
         newPostID = 0,
-        oldPostID = wp.media.model.settings.post.id,
+        oldPostID = '',
         formField = '';
 
     // Disable current tab clicked
@@ -86,6 +87,7 @@
 
     function sb_set_uploaded_image(fileFrame, formField) {
         var mediaData = fileFrame.state().get('selection').first().toJSON();
+        oldPostID = wp.media.model.settings.post.id;
         if(formField) {
             var imageSource = mediaData.url,
                 mediaThumbnailBox = formField.closest('div.sbtheme-media-image').find('div.sbtheme.media.image');
@@ -169,19 +171,18 @@
             list.parent().find('.sb-sidebar-count').val(data_sidebar);
             list.sortable('refresh');
         }
-
-        $('#sb-sortable-sidebar').sortable({
-            cancel: ':input, .ui-state-disabled, .sb-icon-delete',
-            placeholder: 'ui-state-highlight',
-        });
-
+        if($('#sb-sortable-sidebar').length) {
+            $('#sb-sortable-sidebar').sortable({
+                cancel: ':input, .ui-state-disabled, .sb-icon-delete',
+                placeholder: 'ui-state-highlight'
+            });
+        }
         $('button.sb-add-sidebar').on('click', function(e){
             e.preventDefault();
             var sortable_list = $(this).parent().find('.ui-sortable');
             append_new_sidebar(sortable_list);
             return false;
         });
-
         sb_option.delegate('.sb-icon-delete', 'click', function(){
             var that = $(this),
                 $li = that.parent(),
