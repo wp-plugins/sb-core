@@ -43,6 +43,9 @@ class SB_User {
         }
     }
 
+    public static function get_logout_url($redirect = '') {
+        return wp_logout_url($redirect);
+    }
 
     public static function set_password($user_id, $new_password) {
         wp_set_password($new_password, $user_id);

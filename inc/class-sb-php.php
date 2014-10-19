@@ -5,7 +5,7 @@ class SB_PHP {
     }
 
     public static function mysql_time_format() {
-        return "Y-m-d H:i:s";
+        return 'Y-m-d H:i:s';
     }
 
     public static function move_item_to_beginning_by_key($key, $arr) {
@@ -26,11 +26,11 @@ class SB_PHP {
 
     public static function date_plus_minute($date, $minute) {
         $kq = new DateTime($date);
-        $time_modify = "+".$minute;
+        $time_modify = '+' . $minute;
         if($minute > 1) {
-            $time_modify .= " minutes";
+            $time_modify .= ' minutes';
         } else {
-            $time_modify .= " minute";
+            $time_modify .= ' minute';
         }
         $kq->modify($time_modify);
         return $kq->format(self::mysql_time_format());
@@ -61,6 +61,10 @@ class SB_PHP {
 
     public static function timezone_hcm() {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
+    }
+
+    public static function set_default_timezone($timezone_string) {
+        date_default_timezone_set($timezone_string);
     }
 
     public static function get_input_number($value) {
@@ -108,11 +112,11 @@ class SB_PHP {
     }
 
     public static function strtolower($string) {
-        return mb_strtolower($string);
+        return self::lowercase($string);
     }
 
     public static function strtoupper($string) {
-        return mb_strtoupper($string);
+        return self::uppercase($string);
     }
 
     public static function uppercase($str, $charset = 'UTF-8') {
@@ -125,11 +129,15 @@ class SB_PHP {
     }
 
     public static function get_current_url() {
-        return $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+        return $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
 
-    public static function get_current_date_time($format = 'd-m-Y H:i:s') {
-        self::timezone_hcm();
+    public static function get_current_date_time($format = 'd-m-Y H:i:s', $timezone_string = '') {
+        if(empty($timezone_string)) {
+            self::timezone_hcm();
+        } else {
+            self::set_default_timezone($timezone_string);
+        }
         return date($format);
     }
 
@@ -150,7 +158,7 @@ class SB_PHP {
     }
 
     public static function is_image_url($url) {
-        $img_formats = array("png", "jpg", "jpeg", "gif", "tiff", "bmp");
+        $img_formats = array('png', 'jpg', 'jpeg', 'gif', 'tiff', 'bmp');
         $path_info = pathinfo($url);
         $extension = isset($path_info['extension']) ? $path_info['extension'] : "";
         if (in_array(strtolower($extension), $img_formats)) {
@@ -185,7 +193,7 @@ class SB_PHP {
         $doc = new DOMDocument();
         @$doc->loadHTML($content);
         $xpath = new DOMXPath($doc);
-        $src = $xpath->evaluate("string(//img/@src)");
+        $src = $xpath->evaluate('string(//img/@src)');
         return $src;
     }
 
@@ -228,13 +236,13 @@ class SB_PHP {
     }
 
     public static function paragraph_to_array($list_paragraph) {
-        $list_paragraph = str_replace("</p>", "", $list_paragraph);
-        $list_paragraph = explode("<p>", $list_paragraph);
+        $list_paragraph = str_replace('</p>', '', $list_paragraph);
+        $list_paragraph = explode('<p>', $list_paragraph);
         return array_filter($list_paragraph);
     }
 
     public static function is_favicon_url($url) {
-        $favicon_formats = array("png", "ico");
+        $favicon_formats = array('png', 'ico');
         $path_info = pathinfo($url);
         $extension = isset($path_info['extension']) ? $path_info['extension'] : '';
         if (in_array(strtolower($extension), $favicon_formats)) {
@@ -245,7 +253,7 @@ class SB_PHP {
 
     public static function implode_all($arr, $split = '~') {
         if(!is_array($arr)) return $arr;
-        $result = "";
+        $result = '';
         foreach($arr as $value) {
             if(empty($value)) continue;
             if(is_array($value)) {
@@ -304,8 +312,8 @@ class SB_PHP {
 
     public static function add_http_to_url($url) {
         $url = self::strtolower($url);
-        if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
-            $url = "http://" . $url;
+        if (!preg_match('~^(?:f|ht)tps?://~i', $url)) {
+            $url = 'http://' . $url;
         }
         return $url;
     }
@@ -335,7 +343,8 @@ class SB_PHP {
     }
 
     public static function is_url_alive($url) {
-        return true;
+        $domain = self::get_domain_name($url);
+        return self::is_domain_alive($domain);
     }
 
     public static function get_one_in_many_if_empty($current_value, $array_value) {
@@ -412,9 +421,9 @@ class SB_PHP {
 
     public static function is_ip_vietnam($ip) {
         $details = self::ip_details($ip);
-        if(isset($details["country"])) {
-            $country = $details["country"];
-            if("VN" == $country) {
+        if(isset($details['country'])) {
+            $country = $details['country'];
+            if('VN' == $country) {
                 return true;
             }
         }
@@ -480,7 +489,7 @@ class SB_PHP {
         if(!file_exists($folder)) {
             mkdir($folder, 0777, true);
         }
-        $ifp = fopen($output_file, "wb");
+        $ifp = fopen($output_file, 'wb');
         $data = explode(',', $base64_string);
         fwrite($ifp, base64_decode($data[1]));
         fclose($ifp);
@@ -527,7 +536,7 @@ class SB_PHP {
 
     function current_weekday($format = 'd/m/Y H:i:s') {
         self::timezone_hcm();
-        $weekday = date("l");
+        $weekday = date('l');
         $weekday = strtolower($weekday);
         switch($weekday) {
             case 'monday':
@@ -628,6 +637,55 @@ class SB_PHP {
         }
         $old_string = trim($old_string);
         return $old_string;
+    }
+
+    public static function count_next_day($from, $to) {
+        $sec_from = strtotime ( date(SB_DATE_TIME_FORMAT, strtotime($from)) );
+        $sec_to = strtotime ( date(SB_DATE_TIME_FORMAT, strtotime($to)) );
+        $seconds =  $sec_to - $sec_from;
+        $days = $seconds / 86400;
+        $days = ceil($days);
+        return abs($days);
+    }
+
+    public static function is_today($date) {
+        if(date('Ymd') == date('Ymd', strtotime($date))) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function get_next_time_diff($args = array()) {
+        $from = '';
+        $to = '';
+        $text_before = '';
+        extract($args, EXTR_OVERWRITE);
+        $days = self::count_next_day($from, $to);
+        $result = '';
+        if($days == 1 && self::is_today($to)) {
+            return 'Today';
+        } elseif($days < 7) {
+            $result = self::_n($days, '1 day', '%d days');
+        } elseif($days >= 7 && $days < 30) {
+            $week = round($days/7, 0);
+            $result = self::_n($week, '1 week', '%d weeks');
+        } elseif($days >= 30 && $days < 365) {
+            $value = round($days/30, 0);
+            $result = self::_n($value, '1 month', '%d months');
+        } else {
+            $value = round($days/365, 0);
+            $result = self::_n($value, '1 year', '%d years');
+        }
+        $result = $text_before . ' ' . $result;
+        $result = trim($result);
+        return $result;
+    }
+
+    public static function _n($number, $text_one, $text_many) {
+        if($number < 2) {
+            return sprintf(__($text_one, 'sb-core'), $number);
+        }
+        return sprintf(__($text_many, 'sb-core'), $number);
     }
 
 }

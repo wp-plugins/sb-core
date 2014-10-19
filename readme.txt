@@ -4,7 +4,7 @@ Donate link: http://hocwp.net/donate/
 Tags: sb, sb plugin, sb theme, sb team, sb core, sb options, wordpress options
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 1.0.9
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,7 @@ SB Core is not only a plugin but also a framework, it contains core function for
 * [SB Clean](https://wordpress.org/plugins/sb-clean/)
 * [SB Comment](https://wordpress.org/plugins/sb-comment/)
 * [SB Paginate](https://wordpress.org/plugins/sb-paginate/)
+* [SB Login Page](https://wordpress.org/plugins/sb-login-page/)
 * [SB Post Widget](https://wordpress.org/plugins/sb-post-widget/)
 * [SB Tab Widget](https://wordpress.org/plugins/sb-tab-widget/)
 * [SB TBFA](https://wordpress.org/plugins/sb-tbfa/)
@@ -56,6 +57,11 @@ Please visit [homepage](http://hocwp.net) for more details.
 Please update all SB Plugins after you updated SB Core.
 
 == Changelog ==
+
+= 1.1.0 =
+* Update option field argument.
+* Update get post thumbnail function.
+* Add function to change site url when moving hosting.
 
 = 1.0.9 =
 * Fix function to show warning when user click deactivate SB Core plugin.
