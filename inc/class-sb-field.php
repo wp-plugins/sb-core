@@ -100,7 +100,12 @@ class SB_Field {
     }
 
     public static function media_image_with_url($args = array()) {
+        $name = '';
+        $value = '';
         echo '<div class="sbtheme-media-image with-url">';
+        if(is_array($args)) {
+            extract($args, EXTR_OVERWRITE);
+        }
         self::image_thumbnail($name, $value);
         self::media_upload_with_url($args);
         echo '</div>';
