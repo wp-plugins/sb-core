@@ -71,7 +71,9 @@ class SB_User {
     }
 
     public static function update_meta($user_id, $meta_key, $meta_value) {
-        update_user_meta($user_id, $meta_key, $meta_value);
+        if($user_id > 0) {
+            update_user_meta($user_id, $meta_key, $meta_value);
+        }
     }
 
     public static function get_following_stores($user_id) {
@@ -108,6 +110,10 @@ class SB_User {
 
     public static function remove_following_store($user_id, $store_id) {
         self::update_following_stores($user_id, $store_id, true);
+    }
+
+    public static function unfollow_store($user_id, $store_id) {
+        self::remove_following_store($user_id, $store_id);
     }
 
     public static function get_saving_coupons_array($user_id) {
