@@ -17,18 +17,37 @@ class SB_Field {
     }
 
     public static function media_image($args = array()) {
+        self::media_upload_with_remove_and_preview($args);
+    }
+
+    public static function media_upload_with_remove_and_preview($args = array()) {
         $name = '';
         $value = '';
         $container_class = '';
         if(is_array($args)) {
             extract($args, EXTR_OVERWRITE);
         }
-        $container_class .= ' sbtheme-media-image';
+        if(empty($id) || empty($name)) {
+            return;
+        }
+        $image_preview = '';
+        $image_preview_class = 'image-preview';
+        if(!empty($value)) {
+            $image_preview = sprintf('<img src="%s">', $value);
+            $image_preview_class .= ' has-image';
+        }
+        $container_class .= ' sb-media-upload';
         $container_class = trim($container_class);
-        echo '<div class="' . $container_class . '">';
-        self::image_thumbnail($name, $value);
-        self::media_upload($args);
-        echo '</div>';
+        ?>
+        <div class="<?php echo $container_class; ?>">
+            <div class="<?php echo $image_preview_class; ?>"><?php echo $image_preview; ?></div>
+            <div class="image-upload-container">
+                <input type="url" name="<?php echo esc_attr($name); ?>" value="<?php echo $value; ?>" autocomplete="off" class="image-url">
+                <a href="javascript:;" class="sb-button button sb-insert-media sb-add_media" title="<?php _e('Insert image', 'sb-core'); ?>"><?php _e('Upload', 'sb-core'); ?></a>
+                <a href="javascript:;" class="sb-button button sb-remove-media sb-remove-image" title="<?php _e('Remove image', 'sb-core'); ?>"><?php _e('Remove', 'sb-core'); ?></a>
+            </div>
+        </div>
+        <?php
     }
 
     public static function widget_area($args = array()) {
@@ -106,7 +125,7 @@ class SB_Field {
                     <?php if($count == 0) : ?>
                         <?php $count++; ?>
                         <?php SB_Admin_Custom::set_current_rss_feed_item(array('name' => $name, 'count' => $count)); ?>
-                        <?php sb_get_core_template_part('loop-rss-feed'); ?>
+                        <?php sb_core_get_loop('loop-rss-feed'); ?>
                         <?php $real_count = $count; ?>
                         <?php $order = $count; ?>
                         <?php $next_id++; ?>
@@ -121,7 +140,7 @@ class SB_Field {
                             }
                             ?>
                             <?php SB_Admin_Custom::set_current_rss_feed_item(array('feed' => $feed, 'count' => $new_count, 'name' => $name)); ?>
-                            <?php sb_get_core_template_part('loop-rss-feed'); ?>
+                            <?php sb_core_get_loop('loop-rss-feed'); ?>
                             <?php $new_count++; ?>
 
                         <?php endforeach; ?>

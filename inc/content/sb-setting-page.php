@@ -23,7 +23,7 @@ function sb_do_settings_sections( $page ) {
         if($has_field && 'sb_options_section' != $section_id) {
             do_settings_fields( $page, $section_id );
         } elseif('sb_options_section' == $section_id) {
-            include(SB_CORE_INC_PATH . '/sb-about.php');
+            sb_core_get_content('sb-about');
         }
         echo '</table>';
         echo '</div>';
