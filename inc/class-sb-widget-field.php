@@ -11,10 +11,10 @@ class SB_Widget_Field {
 
     public static function title($id, $name, $value) {
         $args = array(
-            'id'            => $id,
-            'name'          => $name,
-            'value'         => $value,
-            'label_text'    => __('Title:', 'sb-core'),
+            'id' => $id,
+            'name' => $name,
+            'value' => $value,
+            'label' => __('Title:', 'sb-core'),
         );
         self::text($args);
     }
@@ -181,18 +181,18 @@ class SB_Widget_Field {
     }
 
     public static function text($args = array()) {
-        $paragraph_class = '';
-        $input_class = 'widefat';
+        $container_class = '';
+        $field_class = 'widefat';
         $id = '';
         $name = '';
         $value = '';
         $description = '';
-        $label_text = '';
+        $label = '';
         extract($args, EXTR_OVERWRITE);
         ?>
-        <p class="<?php echo $paragraph_class; ?>">
-            <label for="<?php echo esc_attr( $id ); ?>"><?php echo $label_text; ?></label>
-            <input id="<?php echo esc_attr( $id ); ?>" class="<?php echo $input_class; ?>" name="<?php echo esc_attr( $name ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" autocomplete="off">
+        <p class="<?php echo $container_class; ?>">
+            <label for="<?php echo esc_attr($id); ?>"><?php echo $label; ?></label>
+            <input id="<?php echo esc_attr($id); ?>" class="<?php echo $field_class; ?>" name="<?php echo esc_attr($name); ?>" type="text" value="<?php echo esc_attr($value); ?>" autocomplete="off">
             <?php if(!empty($description)) : ?>
                 <em><?php echo $description; ?></em>
             <?php endif; ?>
@@ -235,54 +235,17 @@ class SB_Widget_Field {
     }
 
     public static function select_term($args = array()) {
-        $container_class = '';
-        $id = '';
-        $name = '';
-        $field_class = '';
-        $label = '';
-        $options = array();
-        $value = '';
-        $description = '';
-        $taxonomy = '';
-        $taxonomy_id = '';
-        $taxonomy_name = '';
-        extract($args, EXTR_OVERWRITE);
-        ?>
-        <p class="<?php echo $container_class; ?>">
-            <label for="<?php echo esc_attr($id); ?>"><?php echo $label; ?></label>
-            <select id="<?php echo esc_attr($id); ?>" class="<?php echo $field_class; ?>" name="<?php echo esc_attr($name); ?>" autocomplete="off">
-                <?php foreach($options as $tax) : ?>
-                    <?php $terms = get_terms($tax->name); ?>
-                    <?php if(count($terms) > 0) : ?>
-                        <optgroup label="<?php echo $tax->labels->name; ?>">
-                            <?php foreach ($terms as $cat) : ?>
-                                <option value="<?php echo $cat->term_id; ?>" data-taxonomy="<?php echo $tax->name; ?>" <?php selected($value, $cat->term_id); ?>><?php echo $cat->name; ?> (<?php echo $cat->count; ?>)</option>
-                            <?php endforeach; ?>
-                        </optgroup>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </select>
-            <?php if(!empty($description)) : ?>
-                <em><?php echo $description; ?></em>
-            <?php endif; ?>
-            <input id="<?php echo esc_attr($taxonomy_id); ?>" class="widefat taxonomy" name="<?php echo esc_attr($taxonomy_name); ?>" type="hidden" value="<?php echo esc_attr($taxonomy); ?>">
-        </p>
-        <?php
+        SB_Field::select_term($args);
     }
 
     public static function media_upload($args = array()) {
-        $id = '';
-        $name = '';
-        $label_text = '';
-        $value = '';
-        $paragraph_id = '';
+        $container_class = '';
         extract($args, EXTR_OVERWRITE);
+        SB_PHP::add_string_with_space_before($container_class, 'sb-media-upload');
         ?>
-        <p id="<?php echo $paragraph_id; ?>" class="sb-media-upload">
-            <label for="<?php echo esc_attr($id); ?>"><?php _e($label_text, 'sb-banner-widget' ); ?></label>
-            <input id="<?php echo esc_attr($id); ?>" class="widefat" name="<?php echo esc_attr($name); ?>" type="text" value="<?php echo esc_attr($value); ?>">
-            <a title="<?php _e('Insert image', 'sb-core'); ?>" data-editor="sb-content" class="sb-button button sb-insert-media sb-add-media" href="javascript:;"><?php _e('Upload', 'sb-core'); ?></a>
-        </p>
+        <div class="<?php echo $container_class; ?>">
+            <?php SB_Field::media_upload_no_preview($args); ?>
+        </div>
         <?php
     }
 }

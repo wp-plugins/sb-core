@@ -40,6 +40,21 @@ a:focus {
 
 }
 
+.sb-widget .sb-media-upload input.image-url {
+    display: block;
+    margin: 0;
+    width: 100%;
+}
+
+.sb-widget .sb-media-upload label {
+    line-height: 1.5;
+}
+
+.sb-widget .sb-media-upload .sb-button {
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
 .widget label {
     display: inline-block;
     margin-bottom: 3px;
