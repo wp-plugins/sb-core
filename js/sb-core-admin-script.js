@@ -227,12 +227,14 @@
 
     (function(){
         if(!$('ul.sb-sortable-list').hasClass('ui-sortable')) {
-            var remove_item = false;
+            var remove_item = false,
+                sortable_container = null;
             if(!$('ul.sb-sortable-list').length) {
                 return;
             }
             $('ul.sb-sortable-list').sortable({
                 cancel: ':input, .ui-state-disabled, .sb-icon-delete',
+                connectWith: '.connected-sortable',
                 placeholder: 'ui-state-highlight',
                 receive: function(event, ui) {
                     remove_item = false;
@@ -244,7 +246,9 @@
                     remove_item = true;
                 },
                 beforeStop: function(event, ui) {
-                    if(remove_item) {
+                    var that = $(ui.item),
+                        sortable_list = that.parent();
+                    if(remove_item && sortable_list.hasClass('out-remove')) {
                         var ui_panel = ui.item.closest('div.sb-ui-panel'),
                             input_count = ui_panel.find('input.ui-item-count'),
                             count = parseInt(input_count.val());
@@ -259,7 +263,9 @@
                     that.find('.ui-state-highlight').css({'height': ui.item.height()});
                 },
                 stop: function(event, ui) {
-                    var data = '';
+                    var data = '',
+                        that = $(ui.item);
+                    sortable_container = that.closest('div.sb-sortable');
 
                     $('ul.sb-sortable-list li').each(function(i, el){
                         var p = $(el).find('.ui-item-id').val();
@@ -267,8 +273,15 @@
                     });
                     data = data.slice(0, -1);
                     $('.sb-ui-panel input.ui-item-order').val(data);
+                    data = '';
+                    $('ul.sb-sortable-list.active-sortable li').each(function(i, el){
+                        var p = $(el).attr('data-term');
+                        data += p + ',';
+                    });
+                    data = data.slice(0, -1);
+                    sortable_container.find('.active-sortalbe-value').val(data);
                 }
-            });
+            }).disableSelection();
         }
     })();
 

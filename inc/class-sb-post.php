@@ -12,12 +12,33 @@ class SB_Post {
         return $result;
     }
 
+    public static function get_attachments($post_id) {
+        return self::get_images($post_id);
+    }
+
+    public static function get_first_attachment($post_id) {
+        return self::get_first_image($post_id);
+    }
+
     public static function get_first_image($post_id) {
         $images = self::get_images($post_id);
         foreach($images as $image) {
             return $image;
         }
         return '';
+    }
+
+    public static function auto_set_thumbnail($post_id) {
+        $first_image = self::get_first_image($post_id);
+        if(empty($first_image)) {
+            $post = get_post($post_id);
+            if($post) {
+                $first_image = SB_PHP::get_first_image($post->post_content);
+                self::set_thumbnail_from_url($post_id, $first_image);
+            }
+        } else {
+            self::set_thumbnail($post_id, $first_image->ID);
+        }
     }
 
     public static function get_first_image_url($post_id) {
@@ -66,6 +87,7 @@ class SB_Post {
         $width = '';
         $height = '';
         $style = '';
+        $crop = false;
         extract($args, EXTR_OVERWRITE);
         if(is_array($size) && count($size) == 1) {
             $size = array($size, $size);
@@ -78,19 +100,38 @@ class SB_Post {
         $args['size'] = $size;
         $result = self::get_thumbnail_url($args);
         if(!empty($result)) {
-            $result = '<img class="wp-post-image" alt="' . get_the_title($post_id) . '" width="' . $width . '" height="' . $height . '" src="' . $result . '"' . $style . '>';
+            $result = bfi_thumb($result, array('width' => $width, 'height' => $height, 'crop' => $crop));
+            $result = '<img class="wp-post-image sb-post-image img-responsive" alt="' . get_the_title($post_id) . '" width="' . $width . '" height="' . $height . '" src="' . $result . '"' . $style . '>';
         }
         return apply_filters('sb_thumbnail_html', $result);
     }
 
     public static function the_thumbnail_html($args = array()) {
         $post_id = get_the_ID();
+        $thumbnail_url = '';
         extract($args, EXTR_OVERWRITE);
+        if(empty($thumbnail_url)) {
+            $thumbnail_url = self::get_thumbnail_html($args);
+        } else {
+            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
+        }
         ?>
         <div class="post-thumbnail">
-            <a href="<?php echo get_permalink($post_id); ?>"><?php echo self::get_thumbnail_html($args); ?></a>
+            <a href="<?php echo get_permalink($post_id); ?>"><?php echo $thumbnail_url; ?></a>
         </div>
         <?php
+    }
+
+    public static function set_thumbnail($post_id, $attach_id) {
+        return set_post_thumbnail($post_id, $attach_id);
+    }
+
+    public static function set_thumbnail_from_url($post_id, $image_url) {
+        if(!current_theme_supports('post-thumbnails') || has_post_thumbnail($post_id) || empty($image_url)) {
+            return false;
+        }
+        $attach_id = SB_Core::fetch_media($image_url);
+        return self::set_thumbnail($post_id, $attach_id);
     }
 
     public static function get_author_url() {
@@ -117,9 +158,14 @@ class SB_Post {
     }
 
     public static function the_date() {
-        printf('<span class="date"><span>%1$s</span></span>',
-            esc_html( get_the_date())
+        printf('<span class="date"><i class="fa fa-clock-o"></i><span>%1$s</span></span>',
+            esc_html(get_the_date())
         );
+    }
+
+    public static function get_types($args = array(), $output = 'names', $operator = 'and') {
+        $args['public'] = true;
+        return get_post_types($args, $output, $operator);
     }
 
     public static function update_custom_menu_url($post_id, $meta_value) {

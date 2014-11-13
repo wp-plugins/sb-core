@@ -101,6 +101,45 @@ class SB_Field {
         </div>
         <?php
     }
+    
+    public static function sortble_term($args = array()) {
+        $option_name = '';
+        $sortable_class = '';
+        $sortable_active_class = '';
+        $term_args = array();
+        $taxonomy = '';
+        if(is_array($args)) {
+            extract($args);
+        }
+        if(empty($option_name) || empty($taxonomy)) {
+            return;
+        }
+        $sortable_class = SB_PHP::add_string_with_space_before($sortable_class, 'connected-sortable sb-sortable-list left min-height');
+        $sortable_active_class = SB_PHP::add_string_with_space_before($sortable_active_class, 'connected-sortable active-sortable sb-sortable-list min-height right');
+        $active_terms = SB_Option::get_theme_option(array('keys' => array($option_name)));
+        $term_args['exclude'] = $active_terms;
+        $terms = SB_Term::get($taxonomy, $term_args);
+        ?>
+        <div class="sb-sortable">
+            <div class="sb-sortable-container">
+                <ul class="<?php echo $sortable_class; ?>">
+                    <?php foreach($terms as $term) : ?>
+                        <li data-term="<?php echo $term->term_id; ?>" class="ui-state-default"><?php echo $term->name; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <ul class="<?php echo $sortable_active_class; ?>">
+                    <?php $terms = $active_terms; $active_terms = explode(',', $active_terms); ?>
+                    <?php foreach($active_terms as $term_id) : if($term_id < 1) continue; $term = get_term($term_id, $taxonomy); ?>
+                        <?php if(!$term) continue; ?>
+                        <li data-term="<?php echo $term->term_id; ?>" class="ui-state-default"><?php echo $term->name; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <input type="hidden" class="active-sortalbe-value" name="sb_options[theme][<?php echo $option_name; ?>]" value="<?php echo $terms; ?>">
+        </div>
+        <p class="description" style="clear: both"><?php _e('Drag and drop the widget into right box to active it.', 'sb-theme'); ?></p>
+        <?php
+    }
 
     public static function rss_feed($args = array()) {
         $id = '';

@@ -425,6 +425,61 @@ class SB_Core {
         exit();
     }
 
+    public static function insert_attachment($attachment, $file_path, $parent_post_id = 0) {
+        if(!file_exists($file_path)) {
+            return 0;
+        }
+        $file_type = wp_check_filetype(basename($file_path), null);
+        $attachment['post_mime_type'] = $file_type['type'];
+        if(!isset($attachment['guid'])) {
+            return 0;
+        }
+        $attachment['post_status'] = isset($attachment['post_status']) ? $attachment['post_status'] : 'inherit';
+        if(!isset($attachment['post_title'])) {
+            $attachment['post_title'] = preg_replace('/\.[^.]+$/', '', basename($file_path));
+        }
+        $attach_id = wp_insert_attachment($attachment, $file_path, $parent_post_id);
+        if($attach_id > 0) {
+            self::update_attachment_meta($attach_id, $file_path);
+            if($parent_post_id > 0) {
+                SB_Post::set_thumbnail($parent_post_id, $attach_id);
+            }
+        }
+        return $attach_id;
+    }
+
+    public static function update_attachment_meta($attach_id, $file_path) {
+        if(!function_exists('wp_generate_attachment_metadata')) {
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+        }
+        $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
+        wp_update_attachment_metadata($attach_id, $attach_data);
+    }
+
+    public static function fetch_media($image_url) {
+        $attach_id = 0;
+        if(empty($image_url)) {
+            return $attach_id;
+        }
+        $wp_upload_dir = wp_upload_dir();
+        $base_dir = trailingslashit($wp_upload_dir['basedir']) . 'sb-media';
+        $base_url = trailingslashit($wp_upload_dir['url']) . 'sb-media';
+        SB_PHP::create_folder($base_dir);
+        $parts = pathinfo($image_url);
+        $random = rand();
+        $random = md5($random);
+        $file_name = 'sb-media-' . $parts['filename'] . '-' . $random . '.' . $parts['extension'];
+        $file_path = trailingslashit($base_dir) . $file_name;
+        $file_url = trailingslashit($base_url) . $file_name;
+        if(SB_PHP::copy($image_url, $file_path)) {
+            $attachment = array(
+                'guid' => $file_url
+            );
+            $attach_id = self::insert_attachment($attachment, $file_path);
+        }
+        return $attach_id;
+    }
+
     public static function switch_theme($name) {
         switch_theme($name);
     }
@@ -552,17 +607,30 @@ class SB_Core {
     }
 
     public static function is_support_post_views() {
+        if(class_exists('WP_Widget_PostViews')) {
+            return true;
+        }
         global $wpdb;
-        $views = self::query_result("SELECT * FROM $wpdb->postmeta WHERE meta_key = 'views'");
-        if(self::is_post_view_active() || count($views) > 0) {
+        $query = $wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE meta_key = %s", 'views');
+        $views = SB_Query::get_results($query);
+        if(count($views) > 0) {
             return true;
         }
         return false;
     }
 
+    public static function is_support_post_favorites() {
+        $users = SB_User::get_by_meta('favorites');
+        if(!is_array($users) || count($users) < 1) {
+            return false;
+        }
+        return true;
+    }
+
     public static function is_support_post_likes() {
         global $wpdb;
-        $likes = self::query_result("SELECT * FROM $wpdb->postmeta WHERE meta_key = 'likes'");
+        $query = $wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE meta_key = %s", 'likes');
+        $likes = SB_Query::get_results($query);
         if(count($likes) > 0) {
             return true;
         }

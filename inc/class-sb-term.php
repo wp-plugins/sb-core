@@ -28,6 +28,11 @@ class SB_Term {
         return $result;
     }
 
+    public static function get_only_top_parents($taxonomy, $args = array()) {
+        $args['parent'] = 0;
+        return self::get($taxonomy, $args);
+    }
+
     public static function get_meta($term_id, $taxonomy, $meta_key) {
         $meta_info = self::get_all_metas($term_id, $taxonomy);
         $result = isset($meta_info[$meta_key]) ? $meta_info[$meta_key] : '';
@@ -50,6 +55,18 @@ class SB_Term {
         return self::get_links('post_tag', $args);
     }
 
+    public static function get_by_meta($taxonomy, $meta_key, $meta_value, $args = array()) {
+        $terms = self::get($taxonomy, $args);
+        $result = array();
+        foreach($terms as $term) {
+            $meta = self::get_meta($term->term_id, $taxonomy, $meta_key);
+            if($meta == $meta_value) {
+                array_push($result, $term);
+            }
+        }
+        return $result;
+    }
+
     public static function get_no_childrens($taxonomy, $args = array()) {
         $args['parent'] = 0;
         $terms = self::get($taxonomy, $args);
@@ -63,6 +80,10 @@ class SB_Term {
     public static function get_categories($args = array()) {
         $args['hide_empty'] = false;
         return get_categories($args);
+    }
+
+    public static function get_by($field, $value, $taxonomy, $output = OBJECT, $filter = 'raw') {
+        return get_term_by($field, $value, $taxonomy, $output = OBJECT, $filter = 'raw');
     }
 
 }

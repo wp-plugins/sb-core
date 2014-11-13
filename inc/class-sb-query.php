@@ -103,12 +103,92 @@ class SB_Query {
 
     public static function build_tax_query($tax_item, $args) {
         if(is_array($args)) {
-            if(isset($$args['tax_query'])) {
+            if(isset($args['tax_query'])) {
                 array_push($args['tax_query'], $tax_item);
             } else {
                 $args['tax_query'] = array($tax_item);
             }
         }
         return $args;
+    }
+
+    public static function build_date_query($date_item, $args) {
+        if(is_array($args)) {
+            if(isset($args['date_query'])) {
+                array_push($args['date_query'], $date_item);
+            } else {
+                $args['date_query'] = array($date_item);
+            }
+        }
+        return $args;
+    }
+
+    public static function get_results($query) {
+        global $wpdb;
+        return $wpdb->get_results($query, OBJECT);
+    }
+
+    public static function build_daily_post_args($args = array()) {
+        $today = getdate();
+        $date_item = array(
+            'year' => $today['year'],
+            'month' => $today['mon'],
+            'day' => $today['mday']
+        );
+        $args = self::build_date_query($date_item, $args);
+        return $args;
+    }
+
+    public static function get_today_posts($args = array()) {
+        $args = self::build_daily_post_args($args);
+        return new WP_Query($args);
+    }
+
+    public static function get_random_posts($args = array()) {
+        $args['orderby'] = 'rand';
+        return new WP_Query($args);
+    }
+
+    public static function build_weekly_post_args($args = array()) {
+        $date_item = array(
+            'year' => date('Y'),
+            'week' => date('W')
+        );
+        $args = self::build_date_query($date_item, $args);
+        return $args;
+    }
+
+    public static function get_this_week_posts($args = array()) {
+        $args = self::build_weekly_post_args($args);
+        return new WP_Query($args);
+    }
+
+    public static function build_monthly_post_args($args = array()) {
+        $today = getdate();
+        $date_item = array(
+            'year' => $today['year'],
+            'month' => $today['mon']
+        );
+        $args = self::build_date_query($date_item, $args);
+        return $args;
+    }
+
+    public static function get_this_month_posts($args = array()) {
+        $args = self::build_monthly_post_args($args);
+        return new WP_Query($args);
+    }
+
+    public static function build_yearly_post_args($args = array()) {
+        $today = getdate();
+        $date_item = array(
+            'year' => $today['year']
+        );
+        $args = self::build_date_query($date_item, $args);
+        return $args;
+    }
+
+    public static function get_this_year_posts($args = array()) {
+        $args = self::build_yearly_post_args($args);
+        return new WP_Query($args);
     }
 }
