@@ -242,6 +242,12 @@ class SB_Widget_Field {
         $container_class = '';
         extract($args, EXTR_OVERWRITE);
         SB_PHP::add_string_with_space_before($container_class, 'sb-media-upload');
+        $upload_button_class = isset($args['upload_button_class']) ? $args['upload_button_class'] : '';
+        $upload_button_class = SB_PHP::add_string_with_space_before($upload_button_class, 'sb-widget-button delegate');
+        $args['upload_button_class'] = $upload_button_class;
+        $remove_button_class = isset($args['remove_button_class']) ? $args['remove_button_class'] : '';
+        $remove_button_class = SB_PHP::add_string_with_space_before($remove_button_class, 'sb-widget-button delegate');
+        $args['remove_button_class'] = $remove_button_class;
         ?>
         <div class="<?php echo $container_class; ?>">
             <?php SB_Field::media_upload_no_preview($args); ?>

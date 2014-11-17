@@ -73,6 +73,8 @@ class SB_Field {
         $preview = true;
         $id = '';
         $label = '';
+        $upload_button_class = '';
+        $remove_button_class = '';
         if(is_array($args)) {
             extract($args, EXTR_OVERWRITE);
         }
@@ -86,6 +88,8 @@ class SB_Field {
             $image_preview_class .= ' has-image';
         }
         $container_class = SB_PHP::add_string_with_space_before($container_class, 'sb-media-upload');
+        $upload_button_class = SB_PHP::add_string_with_space_before($upload_button_class, 'sb-button button sb-insert-media sb-add_media');
+        $remove_button_class = SB_PHP::add_string_with_space_before($remove_button_class, 'sb-button button sb-remove-media sb-remove-image');
         ?>
         <div class="<?php echo $container_class; ?>">
             <?php if($preview) : ?>
@@ -94,8 +98,8 @@ class SB_Field {
             <div class="image-upload-container">
                 <label for="<?php echo esc_attr($id); ?>"><?php echo $label; ?></label>
                 <input type="url" name="<?php echo esc_attr($name); ?>" value="<?php echo $value; ?>" autocomplete="off" class="image-url">
-                <a href="javascript:;" class="sb-button button sb-insert-media sb-add_media" title="<?php _e('Insert image', 'sb-core'); ?>"><?php _e('Upload', 'sb-core'); ?></a>
-                <a href="javascript:;" class="sb-button button sb-remove-media sb-remove-image" title="<?php _e('Remove image', 'sb-core'); ?>"><?php _e('Remove', 'sb-core'); ?></a>
+                <a href="javascript:;" class="<?php echo $upload_button_class; ?>" title="<?php _e('Insert image', 'sb-core'); ?>"><?php _e('Upload', 'sb-core'); ?></a>
+                <a href="javascript:;" class="<?php echo $remove_button_class; ?>" title="<?php _e('Remove image', 'sb-core'); ?>"><?php _e('Remove', 'sb-core'); ?></a>
             </div>
         </div>
         <?php
@@ -165,9 +169,9 @@ class SB_Field {
         if(empty($option_name) || empty($taxonomy)) {
             return;
         }
-        $sortable_class = SB_PHP::add_string_with_space_before($sortable_class, 'connected-sortable sb-sortable-list left min-height');
+        $sortable_class = SB_PHP::add_string_with_space_before($sortable_class, 'connected-sortable sb-sortable-list left min-height sortable-source');
         $sortable_active_class = SB_PHP::add_string_with_space_before($sortable_active_class, 'connected-sortable active-sortable sb-sortable-list min-height right');
-        $active_terms = SB_Option::get_theme_option(array('keys' => array($option_name)));
+        $active_terms = SB_Option::get_theme_option_single_key($option_name);
         $term_args['exclude'] = $active_terms;
         $terms = SB_Term::get($taxonomy, $term_args);
         ?>

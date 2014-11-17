@@ -52,10 +52,14 @@ class SB_Query {
             $post_id = get_the_ID();
         }
         $tags = SB_Post::get_tag_ids($post_id);
-        $posts = new WP_Query(array('post_type' => $post_type, 'tag__in' => $tags, 'posts_per_page' => -1));
+        $defaults = array('post_type' => $post_type, 'tag__in' => $tags, 'posts_per_page' => -1);
+        $defaults = wp_parse_args($defaults, $args);
+        $posts = new WP_Query($defaults);
         $tag_posts = $posts->posts;
         $cats = SB_Post::get_category_ids($post_id);
-        $posts = new WP_Query(array('post_type' => $post_type, 'category__in' => $cats, 'posts_per_page' => -1));
+        $defaults = array('post_type' => $post_type, 'category__in' => $cats, 'posts_per_page' => -1);
+        $defaults = wp_parse_args($defaults, $args);
+        $posts = new WP_Query($defaults);
         $cat_posts = $posts->posts;
         $a_part = SB_PHP::get_part_of(2/3, $posts_per_page);
         foreach($tag_posts as $post) {

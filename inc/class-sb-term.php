@@ -33,6 +33,27 @@ class SB_Term {
         return self::get($taxonomy, $args);
     }
 
+    public static function get_top_parent($term_id, $taxonomy) {
+        $term = get_term($term_id, $taxonomy);
+        while($term->parent > 0) {
+            $term = get_term($term->parent, $taxonomy);
+        }
+        return $term;
+    }
+
+    public static function get_single() {
+        return get_queried_object();
+    }
+
+    public static function get_single_id() {
+        return get_queried_object()->term_id;
+    }
+
+    public static function get_first_level_child($term_id, $taxonomy, $args = array()) {
+        $args['parent'] = $term_id;
+        return self::get($taxonomy, $args);
+    }
+
     public static function get_meta($term_id, $taxonomy, $meta_key) {
         $meta_info = self::get_all_metas($term_id, $taxonomy);
         $result = isset($meta_info[$meta_key]) ? $meta_info[$meta_key] : '';

@@ -260,6 +260,12 @@ class SB_Core {
         return $menu;
     }
 
+    public static function get_current_url() {
+        global $wp;
+        $current_url = trailingslashit(home_url($wp->request));
+        return $current_url;
+    }
+
     public static function get_menu_items($menu, $args = array()) {
         return wp_get_nav_menu_items($menu, $args);
     }
@@ -838,6 +844,8 @@ class SB_Core {
             'show_admin_column'          => $show_admin_column,
             'show_in_nav_menus'          => $show_in_nav_menus,
             'show_tagcloud'              => $show_tagcloud,
+            'query_var' => true,
+            'rewrite' => array('slug' => $slug)
         );
         register_taxonomy($slug, $post_types, $args);
     }
