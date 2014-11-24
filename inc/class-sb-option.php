@@ -24,6 +24,13 @@ class SB_Option {
         update_option('wpseo_internallinks', $options);
     }
 
+    public static function edit_breadcrumb_sep() {
+        $options = get_option('wpseo_internallinks');
+        $sep = isset($options['breadcrumbs-sep']) ? $options['breadcrumbs-sep'] : '/';
+        $options['breadcrumbs-sep'] = '<span class="sep">' . trim($sep) . '</span>';
+        update_option('wpseo_internallinks', $options);
+    }
+
     public static function get_time_fortmat() {
         return get_option('time_format');
     }
@@ -158,6 +165,23 @@ class SB_Option {
             array_unshift($args['keys'], 'theme');
         }
         return self::get_by_key($args);
+    }
+
+    public static function get_utility_option($args = array()) {
+        if(isset($args['keys']) && is_array($args['keys'])) {
+            array_unshift($args['keys'], 'utilities');
+        }
+        return self::get_by_key($args);
+    }
+
+    public static function get_utility($name) {
+        $value = self::get_utility_option(array('keys' => array($name)));
+        return intval($value);
+    }
+
+    public static function utility_enabled($name) {
+        $value = self::get_utility($name);
+        return (bool)$value;
     }
 
     public static function get_theme_option_single_key($key_name) {

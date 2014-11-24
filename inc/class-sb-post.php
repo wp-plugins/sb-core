@@ -74,7 +74,9 @@ class SB_Post {
         }
         if(empty($result)) {
             $post = get_post($post_id);
-            $result = SB_PHP::get_first_image($post->post_content);
+            if($post && !is_wp_error($post)) {
+                $result = SB_PHP::get_first_image($post->post_content);
+            }
         }
         if(empty($result)) {
             $result = SB_Option::get_theme_thumbnail_url();
@@ -128,6 +130,15 @@ class SB_Post {
             <a href="<?php echo get_permalink($post_id); ?>"><?php echo $thumbnail_url; ?></a>
         </div>
         <?php
+    }
+
+    public static function the_thumbnail_crop_html($width, $height) {
+        $args = array(
+            'width' => $width,
+            'height' => $height,
+            'crop' => true
+        );
+        self::the_thumbnail_html($args);
     }
 
     public static function set_thumbnail($post_id, $attach_id) {
