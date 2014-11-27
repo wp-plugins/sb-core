@@ -132,6 +132,16 @@ class SB_Post {
         <?php
     }
 
+    public static function the_thumbnail_crop_html_by_id($post_id, $width, $height) {
+        $args = array(
+            'width' => $width,
+            'height' => $height,
+            'crop' => true,
+            'post_id' => $post_id
+        );
+        self::the_thumbnail_html($args);
+    }
+
     public static function the_thumbnail_crop_html($width, $height) {
         $args = array(
             'width' => $width,

@@ -64,25 +64,7 @@ function sb_core_admin_bar( $wp_admin_bar ) {
 add_action('admin_bar_menu', 'sb_core_admin_bar');
 
 function sb_core_get_default_theme() {
-	$themes = wp_get_themes();
-	$wp_theme = '';
-	foreach($themes as $theme) {
-		$author_uri = $theme->get('AuthorURI');
-		if(strrpos($author_uri, 'wordpress.org') !== false) {
-			$wp_theme = $theme;
-			break;
-		}
-	}
-	if(empty($wp_theme)) {
-		foreach($themes as $theme) {
-			$text_domain = $theme->get('TextDomain');
-			if(strrpos($text_domain, 'sb-theme') === false) {
-				$wp_theme = $theme;
-				break;
-			}
-		}
-	}
-	return $wp_theme;
+	SB_Core::get_default_theme();
 }
 
 function sb_core_deactivation() {

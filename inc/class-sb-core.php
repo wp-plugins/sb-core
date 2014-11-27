@@ -14,6 +14,28 @@ class SB_Core {
         return admin_url('admin-ajax.php');
     }
 
+    public static function get_default_theme() {
+        $themes = wp_get_themes();
+        $wp_theme = '';
+        foreach($themes as $theme) {
+            $author_uri = $theme->get('AuthorURI');
+            if(strrpos($author_uri, 'wordpress.org') !== false) {
+                $wp_theme = $theme;
+                break;
+            }
+        }
+        if(empty($wp_theme)) {
+            foreach($themes as $theme) {
+                $text_domain = $theme->get('TextDomain');
+                if(strrpos($text_domain, 'sb-theme') === false) {
+                    $wp_theme = $theme;
+                    break;
+                }
+            }
+        }
+        return $wp_theme;
+    }
+
     public static function is_yarpp_installed() {
         return class_exists('YARPP');
     }
