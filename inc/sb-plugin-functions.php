@@ -68,12 +68,18 @@ function sb_core_get_default_theme() {
 }
 
 function sb_core_deactivation() {
+    if(!current_user_can('activate_plugins')) {
+        return;
+    }
     update_option('sb_core_activated', 0);
     update_option('sb_core_deactivated_caller', 'wp');
 }
 register_deactivation_hook(SB_CORE_FILE, 'sb_core_deactivation');
 
 function sb_core_activation() {
+    if(!current_user_can('activate_plugins')) {
+        return;
+    }
     update_option('sb_core_activated', 1);
 }
 register_activation_hook(SB_CORE_FILE, 'sb_core_activation');
