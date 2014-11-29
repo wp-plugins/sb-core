@@ -56,6 +56,7 @@ class SB_Plugin {
                     }
                     break;
                 case 'latest_installed':
+                    echo '<span class="button button-disabled" title="' . esc_attr__('This plugin is already installed and is up to date', 'sb-core') . ' ">' . __('Installed', 'sb-core') . '</span>';
                     break;
                 case 'newer_installed':
                     echo '<span class="button button-disabled" title="' . esc_attr__('This plugin is already installed and is up to date', 'sb-core') . ' ">' . __('Installed', 'sb-core') . '</span>';
