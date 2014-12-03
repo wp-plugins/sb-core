@@ -35,7 +35,9 @@ class SB_Option {
     public static function edit_bcn_breadcrumb_sep() {
         $options = self::get_bcn_options();
         $sep = isset($options['hseparator']) ? $options['hseparator'] : '/';
-        $options['hseparator'] = '<span class="sep">' . trim($sep) . '</span>';
+        if(SB_PHP::is_string_contain($sep, 'span')) {
+            $options['hseparator'] = '<span class="sep">' . trim($sep) . '</span>';
+        }
         update_option('bcn_options', $options);
     }
 
@@ -50,7 +52,9 @@ class SB_Option {
     public static function edit_breadcrumb_sep() {
         $options = self::get_wpseo_internallinks();
         $sep = isset($options['breadcrumbs-sep']) ? $options['breadcrumbs-sep'] : '/';
-        $options['breadcrumbs-sep'] = '<span class="sep">' . trim($sep) . '</span>';
+        if(!SB_PHP::is_string_contain($sep, 'span')) {
+            $options['breadcrumbs-sep'] = '<span class="sep">' . trim($sep) . '</span>';
+        }
         update_option('wpseo_internallinks', $options);
     }
 
