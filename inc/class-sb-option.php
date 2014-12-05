@@ -189,6 +189,27 @@ class SB_Option {
         return $value;
     }
 
+    public static function build_sb_option_name($key_array) {
+        if(!is_array($key_array)) {
+            return '';
+        }
+        $result = 'sb_options';
+        foreach($key_array as $key) {
+            if(!empty($key)) {
+                $result .= '[' . $key . ']';
+            }
+        }
+        return $result;
+    }
+
+    public static function build_sb_utility_option_name($key_array) {
+        if(!is_array($key_array)) {
+            return '';
+        }
+        array_unshift($key_array, 'utilities');
+        return self::build_sb_option_name($key_array);
+    }
+
     public static function get_theme_social($social_key) {
         return self::get_by_key(array('keys' => array('theme', 'social', $social_key)));
     }
