@@ -471,15 +471,15 @@ class SB_Post {
         the_category(', ', '');
     }
 
-    public static function the_term($post_id, $taxonomy) {
-        the_terms($post_id, $taxonomy);
+    public static function the_term($post_id, $taxonomy, $before = '', $sep = ', ', $after = '') {
+        the_terms($post_id, $taxonomy, $before, $sep, $after);
     }
 
     public static function the_term_html($post_id, $taxonomy) {
         $terms = get_the_terms($post_id, $taxonomy);
         if($terms && ! is_wp_error($terms)) : ?>
         <span class="cat-links">
-		        <span class="entry-utility-prep"><?php _e('Posted in:', 'sb-core'); ?> </span>
+		        <span class="entry-utility-prep"><?php _e('Chuyên mục:', 'sb-core'); ?> </span>
             <?php the_terms($post_id, $taxonomy); ?>
             </span>
     <?php endif;
