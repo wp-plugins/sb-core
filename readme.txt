@@ -61,7 +61,7 @@ Please update all SB Plugins after you updated SB Core.
 = 1.3.3 =
 * Add meta box field class.
 * Add more default css.
-. Update media upload button.
+* Update media upload button.
 
 = 1.3.2 =
 * Add class meta box field.
