@@ -272,6 +272,16 @@ class SB_PHP {
         return $src;
     }
 
+    public static function get_all_image_from_string($data) {
+        preg_match_all('/<img[^>]+>/i', $data, $matches);
+        return $matches;
+    }
+
+    public static function remove_all_image_from_string($data) {
+        $data = preg_replace('/<img[^>]+\>/i', '', $data);
+        return $data;
+    }
+
     public static function count_image($content) {
         return self::count_html_tag($content, 'img');
     }
