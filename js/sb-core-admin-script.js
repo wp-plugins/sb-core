@@ -7,6 +7,17 @@
         old_post_id = '',
         body = $('body');
 
+    window.sb_default_quick_tags = function() {
+        QTags.addButton('hr', 'hr', '<hr>\n', '', 'w');
+        QTags.addButton('dl', 'dl', '<dl>\n', '</dl>\n\n', 'w');
+        QTags.addButton('dt', 'dt', '\t<dt>', '</dt>\n', 'w');
+        QTags.addButton('dd', 'dd', '\t<dd>', '</dd>\n', 'w');
+    };
+
+    window.sb_get_admin_post_type = function() {
+        return $('input[name="post_type"]').val();
+    }
+
     function sb_is_image_url(url) {
         var result = true,
             extension = url.slice(-4);
