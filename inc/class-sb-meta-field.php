@@ -32,4 +32,19 @@ class SB_Meta_Field {
         </p>
         <?php
     }
+
+    public static function editor($args = array()) {
+        $name = isset($args['name']) ? $args['name'] : '';
+        if(empty($name)) {
+            return;
+        }
+        $value = isset($args['value']) ? $args['value'] : '';
+        $id = isset($args['id']) ? $args['id'] : '';
+        if(empty($id)) {
+            $id = $name;
+        }
+        $label = isset($args['label']) ? $args['label'] : '';
+        echo '<label for="' . $label . '">' . $label . ':</label>';
+        wp_editor($value, $id, $args);
+    }
 }
