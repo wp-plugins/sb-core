@@ -44,7 +44,31 @@ class SB_Meta_Field {
             $id = $name;
         }
         $label = isset($args['label']) ? $args['label'] : '';
-        echo '<label for="' . $label . '">' . $label . ':</label>';
+        echo '<label for="' . $id . '">' . $label . ':</label>';
         wp_editor($value, $id, $args);
+    }
+
+    public static function number($args = array()) {
+        $name = isset($args['name']) ? $args['name'] : '';
+        if(empty($name)) {
+            return;
+        }
+        $value = isset($args['value']) ? $args['value'] : '';
+        $id = isset($args['id']) ? $args['id'] : '';
+        if(empty($id)) {
+            $id = $name;
+        }
+        $label = isset($args['label']) ? $args['label'] : '';
+        $field_class = isset($args['field_class']) ? trim($args['field_class']) : '';
+        echo '<p>';
+        echo '<label for="' . $id . '">' . $label . ':</label>';
+        $input = new SB_HTML('input');
+        $input->set_attribute('type', 'number');
+        $input->set_attribute('class', $field_class);
+        $input->set_attribute('value', $value);
+        $input->set_attribute('name', $name);
+        $input->set_attribute('id', $id);
+        $input->output();
+        echo '</p>';
     }
 }

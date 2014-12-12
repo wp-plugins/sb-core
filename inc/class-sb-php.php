@@ -4,6 +4,20 @@ class SB_PHP {
 
     }
 
+    public static function currency_format_vietnamese($number) {
+        return number_format($number, 0, '.', ',') . ' ₫';
+    }
+
+    public static function replace_image_source($img_tag, $new_source) {
+        $doc = new DOMDocument();
+        $doc->loadHTML($img_tag);
+        $tags = $doc->getElementsByTagName('img');
+        foreach ($tags as $tag) {
+            $tag->setAttribute('src', $new_source);
+        }
+        return $doc->saveHTML();
+    }
+
     public static function clean_url($url) {
         $url = self::lowercase($url);
         $url = str_replace(' ', '-', $url);
