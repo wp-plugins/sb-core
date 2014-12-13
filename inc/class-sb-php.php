@@ -464,7 +464,7 @@ class SB_PHP {
         return self::ip_details($ip);
     }
 
-    function ip_info_geoplugin($ip = null, $purpose = 'location', $deep_detect = true) {
+    public static function ip_info_geoplugin($ip = null, $purpose = 'location', $deep_detect = true) {
         $output = null;
         if(!self::is_ip_valid($ip)) {
             $ip = $_SERVER['REMOTE_ADDR'];
@@ -835,6 +835,48 @@ class SB_PHP {
             array_push($old, $value);
         }
         self::set_session($key, $old);
+    }
+
+    public static function set_cookie($key, $value, $expire, $domain = '') {
+        setcookie($key, $value, $expire, '/', $domain);
+    }
+
+    public static function delete_cookie($key, $expire, $domain = '') {
+        unset($_COOKIE[$key]);
+        self::set_cookie($key, '', $expire, $domain);
+    }
+
+    public static function cookie_enabled() {
+        setcookie('sb_check_cookie_enabled', 'sb_test_cookie', time() + 3600, '/');
+        $result = false;
+        if(count($_COOKIE) > 0) {
+            $result = true;
+        }
+        return $result;
+    }
+
+    public static function set_cookie_minute($key, $value, $minute, $domain = '') {
+        self::set_cookie($key, $value, time() + (60 * $minute), $domain);
+    }
+
+    public static function set_cookie_hour($key, $value, $hour, $domain = '') {
+        $hour *= 60;
+        self::set_cookie_minute($key, $value, $hour, $domain);
+    }
+
+    public static function set_cookie_day($key, $value, $day, $domain = '') {
+        $day *= 24;
+        self::set_cookie_hour($key, $value, $day, $domain);
+    }
+
+    public static function set_cookie_week($key, $value, $week, $domain = '') {
+        $week *= 7;
+        self::set_cookie_day($key, $value, $week, $domain);
+    }
+
+    public static function set_cookie_month($key, $value, $month, $domain = '') {
+        $month *= 30;
+        self::set_cookie_day($key, $value, $month, $domain);
     }
 
     public static function sort_array_by_key_array($array = array(), $order = array()) {
