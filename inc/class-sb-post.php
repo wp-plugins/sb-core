@@ -443,6 +443,17 @@ class SB_Post {
         return $result;
     }
 
+    public static function get_menu_items_by_location($location) {
+        $locations = SB_Core::get_menu_location();
+        $menu_id = isset($locations[$location]) ? $locations[$location] : 0;
+        return wp_get_nav_menu_items($menu_id);
+    }
+
+    public static function get_sticky_post_ids() {
+        $ids = get_option('sticky_posts');
+        return (array)$ids;
+    }
+
     public static function change_custom_menu_url($args = array()) {
         $site_url = '';
         $url = '';

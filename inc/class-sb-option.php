@@ -206,6 +206,12 @@ class SB_Option {
         return $result;
     }
 
+    public static function build_sb_theme_option_name($key_array) {
+        array_unshift($key_array, 'theme');
+        $key_name = self::build_sb_option_name($key_array);
+        return $key_name;
+    }
+
     public static function build_sb_utility_option_name($key_array) {
         if(!is_array($key_array)) {
             return '';
