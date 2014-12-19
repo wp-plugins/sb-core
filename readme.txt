@@ -50,15 +50,13 @@ Please visit [homepage](http://hocwp.net) for more details.
 
 == Screenshots ==
 
-Please visit [homepage](http://hocwp.net) for more details.
+1. The main option page supported by SB Core.
 
 == Upgrade Notice ==
 
 Please update all SB Plugins after you updated SB Core.
 
 == Changelog ==
-
-1. The main option page supported by SB Core.
 
 = 1.4.4 =
 * Add function to change url in post content.
