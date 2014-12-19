@@ -326,6 +326,7 @@ class SB_Core {
             SB_Option::change_widget_text_url($args);
             SB_Term::change_meta_url($url, $site_url);
             add_action('wp_head', array('SB_Core', 'regenerate_htaccess_file'));
+            SB_Post::change_all_url(array('url' => $url, 'site_url' => $site_url));
         } else {
             remove_action('wp_head', array('SB_Core', 'regenerate_htaccess_file'));
         }

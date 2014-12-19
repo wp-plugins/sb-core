@@ -65,6 +65,57 @@ class SB_Post {
         }
     }
 
+    public static function change_all_url($args = array()) {
+        $query = self::get_all();
+        if($query->have_posts()) {
+            $my_posts = $query->posts;
+            foreach($my_posts as $post) {
+                setup_postdata($post);
+                $args['post_content'] = get_the_content();
+                $args['post_id'] = get_the_ID();
+                self::change_url_in_content($args);
+            }
+            wp_reset_postdata();
+        }
+    }
+
+    public static function change_url_in_content($args = array()) {
+        $post_id = isset($args['post_id']) ? $args['post_id'] : 0;
+        $content = isset($args['post_content']) ? $args['post_content'] : '';
+        if(empty($content)) {
+            $post = isset($args['post']) ? $args['post'] : null;
+            if(!SB_Core::is_error($post)) {
+                $content = $post->post_content;
+                if($post_id < 1) {
+                    $post_id = $post->ID;
+                }
+            }
+        }
+        $url = isset($args['url']) ? $args['url'] : '';
+        $site_url = isset($args['site_url']) ? $args['site_url'] : '';
+        $content = str_replace($url, $site_url, $content);
+        $post_data = array(
+            'ID' => $post_id,
+            'post_content' => $content
+        );
+        self::update($post_data);
+    }
+
+    public static function update($post_data) {
+        $post_id = isset($post_data['ID']) ? intval($post_data['ID']) : 0;
+        if($post_id > 0) {
+            wp_update_post($post_data);
+        }
+    }
+
+    public static function get_all($post_type = 'post') {
+        $args = array(
+            'post_type' => $post_type,
+            'posts_per_page' => -1
+        );
+        return new WP_Query($args);
+    }
+
     public static function get_thumbnail_url($args = array()) {
         $post_id = get_the_ID();
         $result = '';
