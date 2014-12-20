@@ -519,7 +519,7 @@ class SB_Post {
         foreach($menu_items as $item) {
             if('trang-chu' == $item->post_name || 'home' == $item->post_name) {
                 $item_url = $item->url;
-                $item_url = str_replace($url, $site_url, $item_url);
+                $item_url = mb_ereg_replace($url, $site_url, $item_url);
                 SB_Post::update_custom_menu_url($item->ID, $item_url);
             }
         }
