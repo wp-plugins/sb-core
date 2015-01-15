@@ -1,3 +1,6 @@
+window.sb_core = window.sb_core || {};
+var sb_ajax_loader;
+
 (function($){
 
     var sb_option = $('div.sb-option'),
@@ -13,6 +16,15 @@
         QTags.addButton('dt', 'dt', '\t<dt>', '</dt>\n', 'w');
         QTags.addButton('dd', 'dd', '\t<dd>', '</dd>\n', 'w');
     };
+
+    sb_core.sb_ajax_loader = function(status) {
+        var ajax_loader = $('div.sb-ajax-loader');
+        if(status) {
+            ajax_loader.addClass('active');
+        } else {
+            ajax_loader.removeClass('active');
+        }
+    }
 
     window.sb_get_admin_post_type = function() {
         return $('input[name="post_type"]').val();

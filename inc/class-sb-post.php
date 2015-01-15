@@ -42,6 +42,10 @@ class SB_Post {
         return '';
     }
 
+    public static function clean_all_revision() {
+        SB_Core::delete_revision();
+    }
+
     public static function set_post_term($post_id, $terms, $taxonomy) {
         return wp_set_post_terms($post_id, $terms, $taxonomy);
     }
