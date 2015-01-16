@@ -67,6 +67,6 @@ function sb_core_admin_footer() {
 add_action('admin_footer', 'sb_core_admin_footer');
 
 function sb_core_wp_footer() {
-    sb_core_ajax_loader();
+    //sb_core_ajax_loader();
 }
 add_action('wp_footer', 'sb_core_wp_footer');
