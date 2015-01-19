@@ -2,7 +2,7 @@
 class SB_Post {
     public static function get_images($post_id) {
         $result = array();
-        $files = get_children(array('post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image'));
+        $files = get_posts(array('post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image'));
         foreach($files as $file) {
             $image_file = get_attached_file($file->ID);
             if(file_exists($image_file)) {
@@ -70,6 +70,91 @@ class SB_Post {
         } else {
             $post = get_post($post_id);
             return SB_PHP::get_first_image($post->post_content);
+        }
+    }
+
+    public static function check_duplicate_comment($commentdata) {
+        if(!isset($commentdata['comment_post_ID']) || !isset($commentdata['comment_content']) || !isset($commentdata['comment_author'])) {
+            return false;
+        }
+        if(!isset($commentdata['comment_parent'])) {
+            $commentdata['comment_parent'] = 0;
+        }
+        global $wpdb;
+        $dupe = $wpdb->prepare(
+            "SELECT comment_ID FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_parent = %s AND comment_approved != 'trash' AND ( comment_author = %s ",
+            wp_unslash($commentdata['comment_post_ID']),
+            wp_unslash($commentdata['comment_parent']),
+            wp_unslash($commentdata['comment_author'])
+        );
+        if(isset($commentdata['comment_author_email'])) {
+            $dupe .= $wpdb->prepare(
+                "OR comment_author_email = %s ",
+                wp_unslash($commentdata['comment_author_email'])
+            );
+        }
+        $dupe .= $wpdb->prepare(
+            ") AND comment_content = %s LIMIT 1",
+            wp_unslash($commentdata['comment_content'])
+        );
+        if($wpdb->get_var($dupe)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function update_product_price($post_id, $price) {
+        if(!is_numeric($price) || !is_numeric($post_id) || $post_id < 1) {
+            return;
+        }
+        $sale_price = floatval(self::get_meta($post_id, '_sale_price'));
+        $regular_price = floatval(self::get_meta($post_id, '_regular_price'));
+        if($sale_price > 0 && $price < $regular_price) {
+            self::update_meta($post_id, '_sale_price', $price);
+        } else {
+            self::update_meta($post_id, '_regular_price', $price);
+        }
+        self::update_meta($post_id, '_price', $price);
+    }
+
+    public static function plus_product_price($post_id, $price_plus) {
+        if(!is_numeric($price_plus) || !is_numeric($post_id) || $post_id < 1) {
+            return;
+        }
+        $price = floatval(self::get_meta($post_id, '_price'));
+        $price += $price_plus;
+        self::update_product_price($post_id, $price);
+    }
+
+    public static function minus_product_price($post_id, $price_plus) {
+        if(!is_numeric($price_plus) || !is_numeric($post_id) || $post_id < 1) {
+            return;
+        }
+        $price = floatval(self::get_meta($post_id, '_price'));
+        $price -= $price_plus;
+        self::update_product_price($post_id, $price);
+    }
+
+    public static function remove_duplicate_comment($post_id = 0) {
+        global $wpdb;
+        $query = "SELECT * FROM $wpdb->comments";
+        if($post_id > 0) {
+            $query .= " WHERE comment_post_ID = " . $post_id;
+        }
+        $comments = $wpdb->get_results($query);
+        $compare_comments = $comments;
+        foreach($comments as $comment) {
+            $comment_id = $comment->comment_ID;
+            foreach($compare_comments as $compare) {
+                $compare_comment_id = $compare->comment_ID;
+                if($comment_id == $compare_comment_id) {
+                    continue;
+                }
+                if($comment->comment_content == $compare->comment_content) {
+                    $query = "DELETE FROM $wpdb->comments WHERE comment_ID = " . $compare_comment_id;
+                    $wpdb->query($query);
+                }
+            }
         }
     }
 
@@ -504,8 +589,11 @@ class SB_Post {
 
     public static function insert_comment($post_id, $comment_data) {
         $comment_data['comment_post_ID'] = $post_id;
-        $comment_id = wp_insert_comment($comment_data);
-        $comment_id = intval($comment_id);
+        $comment_id = 0;
+        if(!self::check_duplicate_comment($comment_data)) {
+            $comment_id = wp_insert_comment($comment_data);
+            $comment_id = intval($comment_id);
+        }
         return $comment_id;
     }
 

@@ -13,6 +13,21 @@ class SB_Query {
         return $products->post_count;
     }
 
+    public static function get_product_by_price_range($price_min, $price_max, $args = array()) {
+        $args['post_type'] = 'product';
+        if(!isset($args['posts_per_page'])) {
+            $args['posts_per_page'] = -1;
+        }
+        $meta_item = array(
+            'key' => '_price',
+            'value' => array($price_min, $price_max),
+            'type' => 'numeric',
+            'compare' => 'BETWEEN'
+        );
+        $args = self::build_meta_query($meta_item, $args);
+        return new WP_Query($args);
+    }
+
     public static function get_post_by_term($term_id, $taxonomy, $args = array()) {
         $tax_item = array(
             'taxonomy' => $taxonomy,
@@ -134,6 +149,17 @@ class SB_Query {
                 array_push($args['tax_query'], $tax_item);
             } else {
                 $args['tax_query'] = array($tax_item);
+            }
+        }
+        return $args;
+    }
+
+    public static function build_meta_query($meta_item, $args) {
+        if(is_array($args)) {
+            if(isset($args['meta_query'])) {
+                array_push($args['meta_query'], $meta_item);
+            } else {
+                $args['meta_query'] = array($meta_item);
             }
         }
         return $args;

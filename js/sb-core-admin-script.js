@@ -24,11 +24,11 @@ var sb_ajax_loader;
         } else {
             ajax_loader.removeClass('active');
         }
-    }
+    };
 
     window.sb_get_admin_post_type = function() {
         return $('input[name="post_type"]').val();
-    }
+    };
 
     function sb_is_image_url(url) {
         var result = true,
