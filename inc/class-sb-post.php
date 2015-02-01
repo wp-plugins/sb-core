@@ -304,7 +304,7 @@ class SB_Post {
             if(!empty($tmp)) {
                 $result = $tmp;
             }
-            $result = '<img class="wp-post-image sb-post-image img-responsive" alt="' . get_the_title($post_id) . '" width="' . $width . '" height="' . $height . '" src="' . $result . '"' . $style . '>';
+            $result = '<img class="wp-post-image sb-post-image img-responsive thumbnail-image" alt="' . get_the_title($post_id) . '" width="' . $width . '" height="' . $height . '" src="' . $result . '"' . $style . '>';
         }
         return apply_filters('sb_thumbnail_html', $result);
     }
@@ -316,7 +316,7 @@ class SB_Post {
         if(empty($thumbnail_url)) {
             $thumbnail_url = self::get_thumbnail_html($args);
         } else {
-            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
+            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive thumbnail-image" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
         }
         ?>
         <div class="post-thumbnail">
@@ -332,7 +332,7 @@ class SB_Post {
         if(empty($thumbnail_url)) {
             $thumbnail_url = self::get_thumbnail_html($args);
         } else {
-            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
+            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive thumbnail-image" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
         }
         ?>
         <a href="<?php echo get_permalink($post_id); ?>"><?php echo $thumbnail_url; ?></a>
@@ -346,7 +346,7 @@ class SB_Post {
         if(empty($thumbnail_url)) {
             $thumbnail_url = self::get_thumbnail_html($args);
         } else {
-            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
+            $thumbnail_url = sprintf('<img class="wp-post-image sb-post-image img-responsive thumbnail-image" src="%1$s" alt="%2$s">', $thumbnail_url, get_the_title($post_id));
         }
         echo $thumbnail_url;
     }
@@ -643,6 +643,18 @@ class SB_Post {
         $views = self::get_views($post_id);
         $views++;
         self::update_meta($post_id, 'views', $views);
+        $views_week = intval(self::get_meta($post_id, 'views_week'));
+        $new_week = intval(get_option('sb_new_week'));
+        if(SB_PHP::is_monday() && $new_week != 1) {
+            $views_week = 0;
+            update_option('sb_new_week', 1);
+        } else {
+            if(!SB_PHP::is_monday() && $new_week != 0) {
+                update_option('sb_new_week', 0);
+            }
+        }
+        $views_week++;
+        self::update_meta($post_id, 'views_week', $views_week);
     }
 
     public static function update_metas($post_id, $metas = array()) {

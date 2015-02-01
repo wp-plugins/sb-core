@@ -926,6 +926,26 @@ class SB_PHP {
         return $value;
     }
 
+    public static function is_monday($date_string = '') {
+        if(empty($date_string)) {
+            $date_string = date('D');
+        } else {
+            $date_string = date('D', strtotime(self::string_to_datetime($date_string)));
+        }
+        if($date_string === 'Mon') {
+            return true;
+        }
+        return false;
+    }
+
+    public static function is_first_day_of_month() {
+        $date = date('d');
+        if($date == '01') {
+            return true;
+        }
+        return false;
+    }
+
     public static function string_to_datetime($string, $format = 'Y-m-d H:i:s') {
         $string = str_replace('/', '-', $string);
         $string = trim($string);
