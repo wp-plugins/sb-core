@@ -38,6 +38,47 @@ class SB_Query {
         return new WP_Query($args);
     }
 
+    public static function get_full_post_by_meta($args = array()) {
+        $posts_per_page = isset($args['posts_per_page']) ? $args['posts_per_page'] : self::get_posts_per_page();
+        $orderby = isset($args['orderby']) ? $args['orderby'] : '';
+        $meta_key = isset($args['meta_key']) ? $args['meta_key'] : '';
+        $query = new WP_Query($args);
+        if($query->have_posts() && $query->post_count < $posts_per_page) {
+            $tmp_query = $query;
+            $post_ids = array();
+            $my_posts = $query->posts;
+            foreach($my_posts as $game) {
+                array_push($post_ids, $game->ID);
+            }
+            $posts_per_page -= $query->post_count;
+            unset($args['orderby']);
+            unset($args['meta_key']);
+            $args['posts_per_page'] = $posts_per_page;
+            $args['post__not_in'] = $post_ids;
+            $query = new WP_Query($args);
+            if($query->have_posts()) {
+                $my_posts = $query->posts;
+                foreach($my_posts as $game) {
+                    array_push($tmp_query->posts, $game);
+                }
+                $tmp_query->post_count = $tmp_query->post_count + $query->post_count;
+            }
+            return $tmp_query;
+        } else {
+            if($query->post_count >= $posts_per_page) {
+                return $query;
+            }
+            unset($args['orderby']);
+            unset($args['meta_key']);
+            return new WP_Query($args);
+        }
+    }
+
+    public static function get_oldest_post($args = array()) {
+        $args['order'] = 'ASC';
+        return new WP_Query($args);
+    }
+
     public static function get_most_view_of_week($args = array()) {
         $args['orderby'] = 'meta_value_num';
         $args['meta_key'] = 'views_week';

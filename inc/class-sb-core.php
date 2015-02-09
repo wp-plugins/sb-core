@@ -469,6 +469,11 @@ class SB_Core {
         return $items;
     }
 
+    public static function allow_anonymous_comment() {
+        update_option('require_name_email', 0);
+        update_option('comment_whitelist', 0);
+    }
+
     public static function regenerate_htaccess_file() {
         if(!function_exists('save_mod_rewrite_rules')) {
             if(!function_exists('mysql2date')) {
@@ -910,6 +915,9 @@ class SB_Core {
     }
 
     public static function build_meta_box_field_name($name) {
+        if(empty($name)) {
+            return $name;
+        }
         $name = str_replace('sbmb_', '', $name);
         return 'sbmb_' . $name;
     }

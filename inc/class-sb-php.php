@@ -50,6 +50,13 @@ class SB_PHP {
         return $result;
     }
 
+    public static function is_array_has_value($arr) {
+        if(is_array($arr) && count($arr) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public static function get_user_agent() {
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
         return $user_agent;
@@ -619,7 +626,7 @@ class SB_PHP {
 
     public static function add_http_to_url($url) {
         $url = self::strtolower($url);
-        if (!preg_match('~^(?:f|ht)tps?://~i', $url)) {
+        if(!empty($url) && !preg_match('~^(?:f|ht)tps?://~i', $url)) {
             $url = 'http://' . $url;
         }
         return $url;

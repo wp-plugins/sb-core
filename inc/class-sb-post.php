@@ -760,7 +760,7 @@ class SB_Post {
     }
 
     public static function get_all_image_from_content($content) {
-        return SB_PHP::get_all_image_from_string($content);
+        return SB_PHP::get_all_image_html_from_string($content);
     }
 
     public static function get_all_image_html_from_content($content) {
@@ -786,6 +786,33 @@ class SB_Post {
 
     public static function the_term($post_id, $taxonomy, $before = '', $sep = ', ', $after = '') {
         the_terms($post_id, $taxonomy, $before, $sep, $after);
+    }
+
+    public static function get_rate_average($post_id, $precision = 2) {
+        $value = floatval(self::get_meta($post_id, 'rate'));
+        $value = round($value, $precision);
+        return $value;
+    }
+
+    public static function update_rate_average($post_id, $score) {
+        $old_score = self::get_rate_average($post_id);
+        $value = $old_score + $score;
+        if($old_score > 0) {
+            $value /= 2;
+        }
+        update_post_meta($post_id, 'rate', $value);
+        return $value;
+    }
+
+    public static function get_rate_count($post_id) {
+        return intval(self::get_meta($post_id, 'rates'));
+    }
+
+    public static function update_rate_count($post_id) {
+        $count = self::get_rate_count($post_id);
+        $count++;
+        update_post_meta($post_id, 'rates', $count);
+        return $count;
     }
 
     public static function the_term_html($post_id, $taxonomy) {
