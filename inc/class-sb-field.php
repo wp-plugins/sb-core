@@ -527,24 +527,37 @@ class SB_Field {
         extract($args, EXTR_OVERWRITE);
         ?>
         <p class="<?php echo $container_class; ?>">
-            <label for="<?php echo esc_attr($id); ?>"><?php echo $label; ?></label>
+            <?php if(!empty($label)) : ?>
+                <label for="<?php echo esc_attr($id); ?>"><?php echo $label; ?></label>
+            <?php endif; ?>
             <select id="<?php echo esc_attr($id); ?>" class="<?php echo $field_class; ?>" name="<?php echo esc_attr($name); ?>" autocomplete="off">
                 <option value="0">--- <?php _e('Choose the term', 'sb-core'); ?> ---</option>
-                <?php foreach($options as $tax) : ?>
-                    <?php $terms = get_terms($tax->name); ?>
-                    <?php if(count($terms) > 0) : ?>
-                        <optgroup label="<?php echo $tax->labels->name; ?>">
-                            <?php foreach ($terms as $cat) : ?>
-                                <option value="<?php echo $cat->term_id; ?>" data-taxonomy="<?php echo $tax->name; ?>" <?php selected($value, $cat->term_id); ?>><?php echo $cat->name; ?> (<?php echo $cat->count; ?>)</option>
-                            <?php endforeach; ?>
-                        </optgroup>
+                <?php if(count($options) > 0) : ?>
+                    <?php foreach($options as $tax) : ?>
+                        <?php $terms = get_terms($tax->name); ?>
+                        <?php if(!SB_Core::is_error($terms) && count($terms) > 0) : ?>
+                            <optgroup label="<?php echo $tax->labels->name; ?>">
+                                <?php foreach($terms as $cat) : ?>
+                                    <option value="<?php echo $cat->term_id; ?>" data-taxonomy="<?php echo $tax->name; ?>" <?php selected($value, $cat->term_id); ?>><?php echo $cat->name; ?> (<?php echo $cat->count; ?>)</option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <?php $terms = SB_Term::get($taxonomy); ?>
+                    <?php if(!SB_Core::is_error($terms) && count($terms) > 0) : ?>
+                        <?php foreach($terms as $cat) : ?>
+                            <option value="<?php echo $cat->term_id; ?>" data-taxonomy="<?php echo $taxonomy; ?>" <?php selected($value, $cat->term_id); ?>><?php echo $cat->name; ?> (<?php echo $cat->count; ?>)</option>
+                        <?php endforeach; ?>
                     <?php endif; ?>
-                <?php endforeach; ?>
+                <?php endif; ?>
             </select>
             <?php if(!empty($description)) : ?>
                 <em><?php echo $description; ?></em>
             <?php endif; ?>
-            <input id="<?php echo esc_attr($taxonomy_id); ?>" class="widefat taxonomy" name="<?php echo esc_attr($taxonomy_name); ?>" type="hidden" value="<?php echo esc_attr($taxonomy); ?>">
+            <?php if(!empty($taxonomy_name)) : ?>
+                <input id="<?php echo esc_attr($taxonomy_id); ?>" class="widefat taxonomy" name="<?php echo esc_attr($taxonomy_name); ?>" type="hidden" value="<?php echo esc_attr($taxonomy); ?>">
+            <?php endif; ?>
         </p>
         <?php
     }

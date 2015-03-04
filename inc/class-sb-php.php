@@ -849,34 +849,40 @@ class SB_PHP {
         return $text;
     }
 
-    function current_weekday($format = 'd/m/Y H:i:s') {
+    public static function get_current_weekday_and_date_time($format = 'd/m/Y H:i:s', $args = array()) {
+        return self::current_weekday($format, $args);
+    }
+
+    public static function current_weekday($format = 'd/m/Y H:i:s', $args = array()) {
         self::timezone_hcm();
         $weekday = date('l');
         $weekday = strtolower($weekday);
+        $labels = isset($args['labels']) ? $args['labels'] : array();
+        $separator = isset($args['separator']) ? $args['separator'] : ', ';
         switch($weekday) {
             case 'monday':
-                $weekday = 'Thứ hai';
+                $weekday = isset($labels['mon']) ? $labels['mon'] : __('Thứ hai', 'sb-core');
                 break;
             case 'tuesday':
-                $weekday = 'Thứ ba';
+                $weekday = isset($labels['tue']) ? $labels['tue'] : __('Thứ ba', 'sb-core');
                 break;
             case 'wednesday':
-                $weekday = 'Thứ tư';
+                $weekday = isset($labels['wed']) ? $labels['wed'] : __('Thứ tư', 'sb-core');
                 break;
             case 'thursday':
-                $weekday = 'Thứ năm';
+                $weekday = isset($labels['thur']) ? $labels['thur'] : __('Thứ năm', 'sb-core');
                 break;
             case 'friday':
-                $weekday = 'Thứ sáu';
+                $weekday = isset($labels['fri']) ? $labels['fri'] : __('Thứ sáu', 'sb-core');
                 break;
             case 'saturday':
-                $weekday = 'Thứ bảy';
+                $weekday = isset($labels['sat']) ? $labels['sat'] : __('Thứ bảy', 'sb-core');
                 break;
             default:
-                $weekday = 'Chủ nhật';
+                $weekday = isset($labels['sun']) ? $labels['sun'] : __('Chủ nhật', 'sb-core');
                 break;
         }
-        return $weekday.', '.date($format);
+        return $weekday . $separator . date($format);
     }
 
     public static function remove_http($url) {
@@ -957,6 +963,14 @@ class SB_PHP {
         $string = str_replace('/', '-', $string);
         $string = trim($string);
         return date($format, strtotime($string));
+    }
+
+    public static function json_string_to_array($value) {
+        $value = str_replace('\\', '', $value);
+        if(!is_array($value)) {
+            $value = json_decode($value, true);
+        }
+        return (array)$value;
     }
 
     public static function get_cookie($key) {

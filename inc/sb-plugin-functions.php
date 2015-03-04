@@ -19,6 +19,10 @@ function sb_meta_box_nonce() {
     wp_nonce_field('sb_meta_box', 'sb_meta_box_nonce');
 }
 
+function sb_post_meta_box_nonce() {
+    sb_meta_box_nonce();
+}
+
 function sb_term_meta_nonce() {
     wp_nonce_field('sb_term_meta', 'sb_term_meta_nonce');
 }

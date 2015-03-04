@@ -314,7 +314,7 @@ class SB_Core {
         return $output;
     }
 
-    public static function get_human_time_diff( $from, $to = '' ) {
+    public static function get_human_time_diff($from, $to = '') {
         $time_diff = self::get_human_time_diff_info($from, $to);
         $type = $time_diff['type'];
         $value = $time_diff['value'];
@@ -1047,6 +1047,17 @@ class SB_Core {
             return true;
         }
         return false;
+    }
+
+    public static function is_wpcf_installed() {
+        if(defined('WPCF_VERSION') || defined('WPCF_ABSPATH')) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function get_blog_page() {
+        return SB_Post::get_by_slug('blog', 'page');
     }
 
     public static function get_social_share_url($args = array()) {
