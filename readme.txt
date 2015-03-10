@@ -3,8 +3,8 @@ Contributors: skylarkcob
 Donate link: http://hocwp.net/donate/
 Tags: sb, sb plugin, sb theme, sb team, sb core, sb options, wordpress options
 Requires at least: 3.9
-Tested up to: 4.1
-Stable tag: 1.5.8
+Tested up to: 4.1.1
+Stable tag: 1.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,11 @@ Please visit [homepage](http://hocwp.net) for more details.
 Please update all SB Plugins after you updated SB Core.
 
 == Changelog ==
+
+= 1.5.9 =
+* Add color picker field.
+* Update core style.
+* Update for Retail theme.
 
 = 1.5.8 =
 * Update function to get current week day and date time.

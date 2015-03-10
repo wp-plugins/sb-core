@@ -611,4 +611,35 @@ class SB_Field {
             <?php endif; ?>
         </div> <?php
     }
+
+    public static function color_picker($args) {
+        $id = isset($args['id']) ? $args['id'] : '';
+        $default = isset($args['default']) ? $args['default'] : '';
+        $value = isset($args['value']) ? $args['value'] : '';
+        $field_class = isset($args['field_class']) ? $args['field_class'] : '';
+        $field_class = SB_PHP::add_string_with_space_before($field_class, 'sb-color-picker');
+        $description = isset($args['description']) ? $args['description'] : '';
+        $colors = isset($args['colors']) ? (array)$args['colors'] : array();
+        $colors = array_filter($colors);
+        $name = isset($args['name']) ? $args['name'] : ''; ?>
+        <div id="<?php echo $id; ?>" class="sb-color-options">
+            <?php if(count($colors) > 0) : ?>
+                <?php foreach($colors as $color) : ?>
+                    <?php
+                    $color_name = isset($color['name']) ? $name . '[' . $color['name'] . ']' : '';
+                    $color_value = isset($color['color']) ? $color['color'] : '';
+                    $color_default = isset($color['default']) ? $color['default'] : '';
+                    $color_description = isset($color['description']) ? $color['description'] : '';
+                    ?>
+                    <div class="color-area">
+                        <input type="text" value="<?php echo $color_value; ?>" class="<?php echo $field_class; ?>" data-default-color="<?php echo $color_default; ?>" autocomplete="off" name="<?php echo $color_name; ?>">
+                        <p class="description"><?php echo $color_description; ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <input type="text" value="<?php echo $value; ?>" class="<?php echo $field_class; ?>" data-default-color="<?php echo $default; ?>" autocomplete="off" name="<?php echo $name; ?>">
+                <p class="description"><?php echo $description; ?></p>
+            <?php endif; ?>
+        </div> <?php
+    }
 }
