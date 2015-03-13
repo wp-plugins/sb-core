@@ -545,13 +545,13 @@ class SB_User {
         return $url;
     }
 
-    public static function get_lost_password_url() {
+    public static function get_lost_password_url($redirect = '') {
         $url = '';
         if(function_exists('sb_login_page_get_page_lost_password_url')) {
             $url = sb_login_page_get_page_lost_password_url();
         }
         if(empty($url)) {
-            $url = wp_lostpassword_url();
+            $url = wp_lostpassword_url($redirect);
         }
         return $url;
     }

@@ -9,8 +9,8 @@ class SB_PHP {
         return $result;
     }
 
-    public static function currency_format_vietnamese($number) {
-        return number_format($number, 0, '.', ',') . ' ₫';
+    public static function currency_format_vietnamese($number, $suffix = ' ₫') {
+        return number_format($number, 0, '.', ',') . $suffix;
     }
 
     public static function get_operating_system() {

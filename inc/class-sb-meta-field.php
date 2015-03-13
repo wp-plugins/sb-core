@@ -56,6 +56,8 @@ class SB_Meta_Field {
             'post_type' => $post_type,
             'posts_per_page' => -1
         );
+        global $post;
+        $tmp = $post;
         $query = new WP_Query($query_args);
         if($query->have_posts()) :
         ?>
@@ -69,6 +71,7 @@ class SB_Meta_Field {
             </select>
         </p>
         <?php endif;
+        $post = $tmp;
     }
 
     public static function checkbox($args = array()) {

@@ -30,9 +30,9 @@ class SB_Core {
         return $result;
     }
 
-    public static function create_page_template($args = array()) {
-        $plugin_path = isset($args['plugin_path']) ? $args['plugin_path'] : '';
-        $folder_path = isset($args['folder_path']) ? $args['folder_path'] : '';
+    public static function page_template_init($args = array()) {
+        $plugin_path = isset($args['plugin_path']) ? untrailingslashit($args['plugin_path']) : '';
+        $folder_path = isset($args['folder_path']) ? untrailingslashit($args['folder_path']) : '';
         $templates = isset($args['templates']) ? $args['templates'] : array();
         if(empty($plugin_path) || !is_array($templates)) {
             return;
@@ -43,7 +43,17 @@ class SB_Core {
             $page_template->set_folder_path($folder_path);
         }
         $page_template->add_array_templates($templates);
-        $page_template->hook();
+        return $page_template;
+    }
+
+    public static function create_page_template($args = array()) {
+        $page_template = self::page_template_init($args);
+        $page_template->copy_to_theme();
+    }
+
+    public static function delete_page_template($args = array()) {
+        $page_template = self::page_template_init($args);
+        $page_template->delete_from_theme();
     }
 
     public static function the_recaptcha() {
