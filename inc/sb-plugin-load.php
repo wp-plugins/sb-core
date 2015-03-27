@@ -3,11 +3,9 @@ require SB_CORE_INC_PATH . '/sb-plugin-constant.php';
 
 require SB_CORE_INC_PATH . '/sb-plugin-install.php';
 
-require SB_CORE_INC_PATH . '/sb-plugin-functions.php';
+require SB_CORE_PATH . '/lib/bfi-thumb/BFI_Thumb.php';
 
-if(!function_exists('bfi_thumb')) {
-    require SB_CORE_PATH . '/lib/bfi-thumb/BFI_Thumb.php';
-}
+require SB_CORE_INC_PATH . '/sb-plugin-functions.php';
 
 require SB_CORE_INC_PATH . '/class-sb-php.php';
 
@@ -18,6 +16,8 @@ require SB_CORE_INC_PATH . '/class-sb-default-setting.php';
 require SB_CORE_INC_PATH . '/class-sb-core.php';
 
 require SB_CORE_INC_PATH . '/class-sb-option.php';
+
+require SB_CORE_INC_PATH . '/class-sb-captcha.php';
 
 require SB_CORE_INC_PATH . '/class-sb-mail.php';
 
@@ -45,8 +45,18 @@ require SB_CORE_INC_PATH . '/class-sb-geo.php';
 
 require SB_CORE_INC_PATH . '/class-sb-ajax.php';
 
-require SB_CORE_INC_PATH . '/sb-admin.php';
-
 require SB_CORE_INC_PATH . '/sb-plugin-ajax.php';
 
 require SB_CORE_INC_PATH . '/sb-plugin-hook.php';
+
+require SB_CORE_INC_PATH . '/class-sb-field.php';
+
+require SB_CORE_INC_PATH . '/class-sb-widget-field.php';
+
+require SB_CORE_INC_PATH . '/class-sb-admin-custom.php';
+
+require SB_CORE_INC_PATH . '/class-sb-admin.php';
+
+require SB_CORE_INC_PATH . '/sb-admin.php';
+
+require SB_CORE_INC_PATH . '/sb-plugin-admin.php';
