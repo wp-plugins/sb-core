@@ -9,7 +9,7 @@ function sb_core_about_page_link( $links ) {
     array_unshift( $links, $sb_link );
     return $links;
 }
-add_filter( 'plugin_action_links_' . SB_CORE_BASENAME, 'sb_core_about_page_link' );
+if(false === get_transient('sb_core_error')) add_filter( 'plugin_action_links_' . SB_CORE_BASENAME, 'sb_core_about_page_link' );
 
 function sb_core_admin_bar( $wp_admin_bar ) {
     if ( current_user_can( 'manage_options' ) ) {

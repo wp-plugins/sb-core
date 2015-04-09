@@ -4,13 +4,47 @@ Plugin Name: SB Core
 Plugin URI: http://hocwp.net/
 Description: SB Core is not only a plugin, it contains core function for all plugins and themes that are created by SB Team.
 Author: SB Team
-Version: 1.6.2
+Version: 1.6.3
 Author URI: http://hocwp.net/
 Text Domain: sb-core
 Domain Path: /languages/
 */
 
-if(defined('SB_CORE_VERSION')) {
+function sb_core_deactivate_all_sb_plugins() {
+    $activated_plugins = get_option( 'active_plugins' );
+    $sb_plugins = array(
+        'sb-banner-widget/sb-banner-widget.php',
+        'sb-clean/sb-clean.php',
+        'sb-comment/sb-comment.php',
+        'sb-core/sb-core.php',
+        'sb-login-page/sb-login-page.php',
+        'sb-paginate/sb-paginate.php',
+        'sb-post-widget/sb-post-widget.php',
+        'sb-tab-widget/sb-tab-widget.php',
+        'sb-tbfa/sb-tbfa.php'
+    );
+    $new_plugins = $activated_plugins;
+    foreach ( $activated_plugins as $plugin ) {
+        if ( in_array( $plugin, $sb_plugins ) ) {
+            $item = array( $plugin );
+            $new_plugins = array_diff( $new_plugins, $item );
+        }
+    }
+    update_option( 'active_plugins', $new_plugins );
+}
+
+function sb_core_theme_support_message() {
+    unset($_GET['activate']);
+    unset($_GET['error']);
+    ?>
+    <div class="error" id="message"><p><strong>Error:</strong> Plugin <strong>SB Core</strong> has been deactivated because current theme doesn't need it any more.</p></div>
+    <?php
+    sb_core_deactivate_all_sb_plugins();
+}
+
+if(defined('SB_CORE_VERSION') || (defined('SB_THEME_VERSION') && version_compare(SB_THEME_VERSION, '1.7.0', '>=')) || ($sb_theme_version = get_option('sb_theme_version') && version_compare($sb_theme_version, '1.7.0', '>='))) {
+    set_transient('sb_core_error', 1, MINUTE_IN_SECONDS);
+    add_action('admin_notices', 'sb_core_theme_support_message');
     return;
 }
 

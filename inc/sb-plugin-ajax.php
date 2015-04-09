@@ -67,26 +67,7 @@ function sb_deactivate_all_sb_product_ajax_callback() {
 add_action( 'wp_ajax_sb_deactivate_all_sb_product', 'sb_deactivate_all_sb_product_ajax_callback' );
 
 function sb_deactivate_all_sb_plugin() {
-    $activated_plugins = get_option( 'active_plugins' );
-    $sb_plugins = array(
-        'sb-banner-widget/sb-banner-widget.php',
-        'sb-clean/sb-clean.php',
-        'sb-comment/sb-comment.php',
-        'sb-core/sb-core.php',
-        'sb-login-page/sb-login-page.php',
-        'sb-paginate/sb-paginate.php',
-        'sb-post-widget/sb-post-widget.php',
-        'sb-tab-widget/sb-tab-widget.php',
-        'sb-tbfa/sb-tbfa.php'
-    );
-    $new_plugins = $activated_plugins;
-    foreach ( $activated_plugins as $plugin ) {
-        if ( in_array( $plugin, $sb_plugins ) ) {
-            $item = array( $plugin );
-            $new_plugins = array_diff( $new_plugins, $item );
-        }
-    }
-    update_option( 'active_plugins', $new_plugins );
+    sb_core_deactivate_all_sb_plugins();
 }
 
 function sb_switch_to_default_theme() {
