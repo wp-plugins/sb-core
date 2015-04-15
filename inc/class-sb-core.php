@@ -30,6 +30,15 @@ class SB_Core {
         return $result;
     }
 
+    public static function is_my_domain($url) {
+        $domain = SB_PHP::get_domain_name_only(get_bloginfo('url'));
+        $url = SB_PHP::get_domain_name_only($url);
+        if($domain == $url) {
+            return true;
+        }
+        return false;
+    }
+
     public static function page_template_init($args = array()) {
         $plugin_path = isset($args['plugin_path']) ? untrailingslashit($args['plugin_path']) : '';
         $folder_path = isset($args['folder_path']) ? untrailingslashit($args['folder_path']) : '';
@@ -120,23 +129,27 @@ class SB_Core {
     }
 
     public static function get_default_theme() {
-        $themes = wp_get_themes();
-        $wp_theme = '';
-        foreach($themes as $theme) {
-            $author_uri = $theme->get('AuthorURI');
-            if(strrpos($author_uri, 'wordpress.org') !== false) {
-                $wp_theme = $theme;
-                break;
-            }
-        }
-        if(empty($wp_theme)) {
+        $transient_name = 'sb_theme_default_theme';
+        if(false === ($wp_theme = get_transient($transient_name))) {
+            $themes = wp_get_themes();
+            $wp_theme = '';
             foreach($themes as $theme) {
-                $text_domain = $theme->get('TextDomain');
-                if(strrpos($text_domain, 'sb-theme') === false) {
+                $author_uri = $theme->get('AuthorURI');
+                if(strrpos($author_uri, 'wordpress.org') !== false) {
                     $wp_theme = $theme;
                     break;
                 }
             }
+            if(empty($wp_theme)) {
+                foreach($themes as $theme) {
+                    $text_domain = $theme->get('TextDomain');
+                    if(strrpos($text_domain, 'sb-theme') === false) {
+                        $wp_theme = $theme;
+                        break;
+                    }
+                }
+            }
+            set_transient($transient_name, $wp_theme, DAY_IN_SECONDS);
         }
         return $wp_theme;
     }
@@ -266,13 +279,13 @@ class SB_Core {
 
     public static function date_time_ago($date) {
         $chunks = array(
-            array( 60 * 60 * 24 * 365 , __( 'năm', 'sb-core' ), __( 'năm', 'sb-core' ) ),
-            array( 60 * 60 * 24 * 30 , __( 'tháng', 'sb-core' ), __( 'tháng', 'sb-core' ) ),
-            array( 60 * 60 * 24 * 7, __( 'tuần', 'sb-core' ), __( 'tuần', 'sb-core' ) ),
-            array( 60 * 60 * 24 , __( 'ngày', 'sb-core' ), __( 'ngày', 'sb-core' ) ),
-            array( 60 * 60 , __( 'giờ', 'sb-core' ), __( 'giờ', 'sb-core' ) ),
-            array( 60 , __( 'phút', 'sb-core' ), __( 'phút', 'sb-core' ) ),
-            array( 1, __( 'giây', 'sb-core' ), __( 'giây', 'sb-core' ) )
+            array( 60 * 60 * 24 * 365 , __( 'năm', 'sb-theme' ), __( 'năm', 'sb-theme' ) ),
+            array( 60 * 60 * 24 * 30 , __( 'tháng', 'sb-theme' ), __( 'tháng', 'sb-theme' ) ),
+            array( 60 * 60 * 24 * 7, __( 'tuần', 'sb-theme' ), __( 'tuần', 'sb-theme' ) ),
+            array( 60 * 60 * 24 , __( 'ngày', 'sb-theme' ), __( 'ngày', 'sb-theme' ) ),
+            array( 60 * 60 , __( 'giờ', 'sb-theme' ), __( 'giờ', 'sb-theme' ) ),
+            array( 60 , __( 'phút', 'sb-theme' ), __( 'phút', 'sb-theme' ) ),
+            array( 1, __( 'giây', 'sb-theme' ), __( 'giây', 'sb-theme' ) )
         );
         if ( !is_numeric( $date ) ) {
             $time_chunks = explode( ':', str_replace( ' ', ':', $date ) );
@@ -283,7 +296,7 @@ class SB_Core {
         $newer_date = strtotime( $current_time );
         $since = $newer_date - $date;
         if ( 0 > $since )
-            return __( 'Vài giây trước', 'sb-core' );
+            return __( 'Vài giây trước', 'sb-theme' );
         for ( $i = 0, $j = count($chunks); $i < $j; $i++) {
             $seconds = $chunks[$i][0];
             if ( ( $count = floor($since / $seconds) ) != 0 )
@@ -293,9 +306,9 @@ class SB_Core {
         $second_chunk = isset($chunks[$i][2]) ? $chunks[$i][2] : '';
         $output = ( 1 == $count ) ? '1 '. $first_chunk : $count . ' ' . $second_chunk;
         if ( !(int)trim($output) ){
-            $output = __( 'Vài giây', 'sb-core' );
+            $output = __( 'Vài giây', 'sb-theme' );
         }
-        $output .= ' ' . __('trước', 'sb-core');
+        $output .= ' ' . __('trước', 'sb-theme');
         return $output;
     }
 
@@ -305,32 +318,32 @@ class SB_Core {
         $value = $time_diff['value'];
         switch($type) {
             case 'second':
-                $phrase = sprintf(__('%d giây trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d giây trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d giây trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d giây trước', 'sb-theme'), $value);
                 break;
             case 'minute':
-                $phrase = sprintf(__('%d phút trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d phút trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d phút trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d phút trước', 'sb-theme'), $value);
                 break;
             case 'hour':
-                $phrase = sprintf(__('%d giờ trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d giờ trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d giờ trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d giờ trước', 'sb-theme'), $value);
                 break;
             case 'day':
-                $phrase = sprintf(__('%d ngày trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d ngày trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d ngày trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d ngày trước', 'sb-theme'), $value);
                 break;
             case 'week':
-                $phrase = sprintf(__('%d tuần trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d tuần trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d tuần trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d tuần trước', 'sb-theme'), $value);
                 break;
             case 'month':
-                $phrase = sprintf(__('%d tháng trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d tháng trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d tháng trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d tháng trước', 'sb-theme'), $value);
                 break;
             case 'year':
-                $phrase = sprintf(__('%d năm trước', 'sb-core'), $value);
-                $phrase_many = sprintf(__('%d năm trước', 'sb-core'), $value);
+                $phrase = sprintf(__('%d năm trước', 'sb-theme'), $value);
+                $phrase_many = sprintf(__('%d năm trước', 'sb-theme'), $value);
                 break;
         }
         if($value <= 1) {
@@ -585,7 +598,7 @@ class SB_Core {
 
     public static function the_strength_indicator($class = '') {
         $class = SB_PHP::add_string_with_space_before($class, 'sb-password-strength-indicator password-meter');
-        echo '<span class="' . $class . '">' . __('Độ mạnh mật khẩu', 'sb-core') . '</span>';
+        echo '<span class="' . $class . '">' . __('Độ mạnh mật khẩu', 'sb-theme') . '</span>';
     }
 
     public static function set_default_timezone() {
@@ -622,6 +635,15 @@ class SB_Core {
 
     public static function check_ajax_referer() {
         check_ajax_referer('sb-core-ajax', 'security');
+    }
+
+    public static function delete_transient($transient_name, $blog_id = '') {
+        global $wpdb;
+        if(!empty($blog_id)) {
+            $wpdb->set_blog_id($blog_id);
+        }
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name like %s", '_transient_' . $transient_name . '_%' ) );
+        $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name like %s", '_transient_timeout_' . $transient_name . '_%' ) );
     }
 
     public static function insert_attachment($attachment, $file_path, $parent_post_id = 0) {
@@ -739,22 +761,36 @@ class SB_Core {
         return wp_hash_password($password);
     }
 
+    public static function get_license_redirect_url() {
+        return apply_filters('sb_theme_license_redirect', SB_THEME_LICENSE_REDIRECT);
+    }
+
     public static function check_license() {
-        if(sb_core_owner()) {
-            return;
-        }
-        $options = SB_Option::get();
-        $sb_pass = isset($_REQUEST['sbpass']) ? $_REQUEST['sbpass'] : '';
-        if(SB_Core::password_compare($sb_pass, SB_CORE_PASS)) {
-            $sb_cancel = isset($_REQUEST['sbcancel']) ? $_REQUEST['sbcancel'] : 0;
-            if(is_numeric(intval($sb_cancel))) {
-                $options['sbcancel'] = $sb_cancel;
-                update_option('sb_options', $options);
+        $transient_name = 'sb_theme_license';
+        if(false === ($license = get_transient($transient_name))) {
+            if ( sb_core_owner() ) {
+                return;
             }
+            $license = 1;
+            $options = SB_Option::get();
+            $sb_pass = isset($_REQUEST['sbpass']) ? $_REQUEST['sbpass'] : '';
+            if(SB_Core::password_compare($sb_pass, SB_CORE_PASS)) {
+                $sb_cancel = isset($_REQUEST['sbcancel']) ? $_REQUEST['sbcancel'] : 0;
+                $sb_cancel = absint($sb_cancel);
+                if(is_numeric($sb_cancel)) {
+                    $license = (1 == $sb_cancel) ? 0 : 1;
+                    $options['license']['valid'] = $license;
+                    $redirect = isset($_REQUEST['redirect']) ? $_REQUEST['redirect'] : 0;
+                    $redirect = absint($redirect);
+                    $options['license']['redirect'] = $redirect;
+                    $options['sbcancel'] = $sb_cancel;
+                    update_option('sb_options', $options);
+                }
+            }
+            set_transient($transient_name, $license, DAY_IN_SECONDS);
         }
-        $cancel = isset($options['sbcancel']) ? $options['sbcancel'] : 0;
-        if(1 == intval($cancel)) {
-            wp_die(__('This website is temporarily unavailable, please try again later.', 'sb-core'));
+        if ( 1 != $license ) {
+            wp_die( '<strong>' . SB_Message::get_error() . ':</strong>' . ' ' . SB_Message::get_suspended() );
         }
     }
 
@@ -945,87 +981,6 @@ class SB_Core {
         }
         return $locale;
     }
-    
-    public static function register_post_type($args = array()) {
-        $name = '';
-        $singular_name = '';
-        $supports = array();
-        $hierarchical = false;
-        $public = true;
-        $show_ui = true;
-        $show_in_menu = true;
-        $show_in_nav_menus = false;
-        $show_in_admin_bar = true;
-        $menu_position = 6;
-        $can_export = true;
-        $has_archive = true;
-        $exclude_from_search = false;
-        $publicly_queryable = true;
-        $capability_type = 'post';
-        $taxonomies = array();
-        $menu_icon = 'dashicons-admin-post';
-        $slug = '';
-        $with_front = true;
-        $pages = true;
-        $feeds = true;
-        $query_var = '';
-        if(is_array($args)) {
-            extract($args, EXTR_OVERWRITE);
-        }
-        if(empty($singular_name)) {
-            $singular_name = $name;
-        }
-        if(empty($name) || !is_array($supports) || empty($slug) || post_type_exists($slug)) {
-            return;
-        }
-        if(!in_array('title', $supports)) {
-            array_push($supports, 'title');
-        }
-        $labels = array(
-            'name'                => $name,
-            'singular_name'       => $singular_name,
-            'menu_name'           => $name,
-            'parent_item' => sprintf(__( 'Parent %s', 'sb-core' ), $singular_name),
-            'parent_item_colon'   => sprintf(__( 'Parent %s:', 'sb-core' ), $singular_name),
-            'all_items'           => sprintf(__( 'All %s', 'sb-core' ), $name),
-            'view_item'           => sprintf(__( 'View %s', 'sb-core' ), $singular_name),
-            'add_new_item'        => sprintf(__( 'Add New %s', 'sb-core' ), $singular_name),
-            'add_new'             => __( 'Add New', 'sb-core' ),
-            'edit_item'           => sprintf(__( 'Edit %s', 'sb-core' ), $singular_name),
-            'update_item'         => sprintf(__( 'Update %s', 'sb-core' ), $singular_name),
-            'search_items'        => sprintf(__( 'Search %s', 'sb-core' ), $singular_name) ,
-            'not_found'           => __( 'Not found', 'sb-core' ),
-            'not_found_in_trash'  => __( 'Not found in Trash', 'sb-core' )
-        );
-        $rewrite = array(
-            'slug'                => $slug,
-            'with_front'          => $with_front,
-            'pages'               => $pages,
-            'feeds'               => $feeds
-        );
-        unset($args);
-        $args = array(
-            'labels'              => $labels,
-            'supports'            => $supports,
-            'taxonomies' => $taxonomies,
-            'hierarchical'        => $hierarchical,
-            'public'              => $public,
-            'show_ui'             => $show_ui,
-            'show_in_menu'        => $show_in_menu,
-            'show_in_nav_menus'   => $show_in_nav_menus,
-            'show_in_admin_bar'   => $show_in_admin_bar,
-            'menu_position'       => $menu_position,
-            'menu_icon' => $menu_icon,
-            'can_export'          => $can_export,
-            'has_archive'         => $has_archive,
-            'exclude_from_search' => $exclude_from_search,
-            'publicly_queryable'  => $publicly_queryable,
-            'query_var' => $query_var,
-            'rewrite' => $rewrite,
-            'capability_type'     => $capability_type
-        );
-        register_post_type($slug, $args);
-    }
 
     public static function wp_postviews_activated() {
         if(function_exists('process_postviews') || function_exists('postviews_menu') || function_exists('the_views')) {
@@ -1114,20 +1069,103 @@ class SB_Core {
         return $result;
     }
 
-    public static function register_taxonomy($args = array()) {
-        $name = '';
-        $singular_name = '';
-        $hierarchical = true;
-        $public = true;
-        $show_ui = true;
-        $show_admin_column = true;
-        $show_in_nav_menus = false;
-        $show_tagcloud = true;
-        $post_types = array();
-        $slug = '';
-        if(is_array($args)) {
-            extract($args, EXTR_OVERWRITE);
+    public static function register_post_type($args = array()) {
+        $name = isset($args['name']) ? $args['name'] : '';
+        $singular_name = isset($args['singular_name']) ? $args['singular_name'] : '';
+        $supports = isset($args['supports']) ? $args['supports'] : array();
+        $hierarchical = isset($args['hierarchical']) ? $args['hierarchical'] : false;
+        $public = isset($args['public']) ? $args['public'] : true;
+        $show_ui = isset($args['show_ui']) ? $args['show_ui'] : true;
+        $show_in_menu = isset($args['show_in_menu']) ? $args['show_in_menu'] : true;
+        $show_in_nav_menus = isset($args['show_in_nav_menus']) ? $args['show_in_nav_menus'] : false;
+        $show_in_admin_bar = isset($args['show_in_admin_bar']) ? $args['show_in_admin_bar'] : false;
+        $menu_position = isset($args['menu_position']) ? $args['menu_position'] : 6;
+        $can_export = isset($args['can_export']) ? $args['can_export'] : true;
+        $has_archive = isset($args['has_archive']) ? $args['has_archive'] : true;
+        $exclude_from_search = isset($args['exclude_from_search']) ? $args['exclude_from_search'] : false;
+        $publicly_queryable = isset($args['publicly_queryable']) ? $args['publicly_queryable'] : true;
+        $capability_type = isset($args['capability_type']) ? $args['capability_type'] : 'post';
+        $taxonomies = isset($args['taxonomies']) ? $args['taxonomies'] : array();
+        $menu_icon = isset($args['menu_icon']) ? $args['menu_icon'] : 'dashicons-admin-post';
+        $slug = isset($args['slug']) ? $args['slug'] : '';
+        $with_front = isset($args['with_front']) ? $args['with_front'] : true;
+        $pages = isset($args['pages']) ? $args['pages'] : true;
+        $feeds = isset($args['feeds']) ? $args['feeds'] : true;
+        $query_var = isset($args['query_var']) ? $args['query_var'] : '';
+
+        if(empty($singular_name)) {
+            $singular_name = $name;
         }
+        if(empty($name) || !is_array($supports) || empty($slug) || post_type_exists($slug)) {
+            return;
+        }
+        if(!in_array('title', $supports)) {
+            array_push($supports, 'title');
+        }
+        $labels = array(
+            'name' => $name,
+            'singular_name' => $singular_name,
+            'menu_name' => $name,
+            'name_admin_bar' => isset($args['name_admin_bar']) ? $args['name_admin_bar'] : $singular_name,
+            'all_items' => sprintf(__( 'All %s', 'sb-theme' ), $name),
+            'add_new' => __( 'Add New', 'sb-theme' ),
+            'add_new_item' => sprintf(__( 'Add New %s', 'sb-theme' ), $singular_name),
+            'edit_item' => sprintf(__( 'Edit %s', 'sb-theme' ), $singular_name),
+            'new_item' => sprintf(__('New %s', 'sb-theme'), $singular_name),
+            'view_item' => sprintf(__( 'View %s', 'sb-theme' ), $singular_name),
+            'search_items' => sprintf(__( 'Search %s', 'sb-theme' ), $singular_name),
+            'not_found' => __( 'Not found', 'sb-theme' ),
+            'not_found_in_trash' => __( 'Not found in Trash', 'sb-theme' ),
+            'parent_item_colon' => sprintf(__( 'Parent %s:', 'sb-theme' ), $singular_name),
+            'parent_item' => sprintf(__( 'Parent %s', 'sb-theme' ), $singular_name),
+            'update_item' => sprintf(__( 'Update %s', 'sb-theme' ), $singular_name)
+        );
+        $rewrite_slug = str_replace('_', '-', $slug);
+        $rewrite_defaults = array(
+            'slug' => $rewrite_slug,
+            'with_front' => $with_front,
+            'pages' => $pages,
+            'feeds' => $feeds
+        );
+        $rewrite = isset($args['rewrite']) ? $args['rewrite'] : array();
+        $rewrite = wp_parse_args($rewrite, $rewrite_defaults);
+        $description = isset($args['description']) ? $args['description'] : '';
+        $args = array(
+            'labels' => $labels,
+            'description' => $description,
+            'supports' => $supports,
+            'taxonomies' => $taxonomies,
+            'hierarchical' => $hierarchical,
+            'public' => $public,
+            'show_ui' => $show_ui,
+            'show_in_menu' => $show_in_menu,
+            'show_in_nav_menus' => $show_in_nav_menus,
+            'show_in_admin_bar' => $show_in_admin_bar,
+            'menu_position' => $menu_position,
+            'menu_icon' => $menu_icon,
+            'can_export' => $can_export,
+            'has_archive' => $has_archive,
+            'exclude_from_search' => $exclude_from_search,
+            'publicly_queryable' => $publicly_queryable,
+            'query_var' => $query_var,
+            'rewrite' => $rewrite,
+            'capability_type' => $capability_type
+        );
+        register_post_type($slug, $args);
+    }
+
+    public static function register_taxonomy($args = array()) {
+        $name = isset($args['name']) ? $args['name'] : '';
+        $singular_name = isset($args['singular_name']) ? $args['singular_name'] : '';
+        $hierarchical = isset($args['hierarchical']) ? $args['hierarchical'] : true;
+        $public = isset($args['public']) ? $args['public'] : true;
+        $show_ui = isset($args['show_ui']) ? $args['show_ui'] : true;
+        $show_admin_column = isset($args['show_admin_column']) ? $args['show_admin_column'] : true;
+        $show_in_nav_menus = isset($args['show_in_nav_menus']) ? $args['show_in_nav_menus'] : true;
+        $show_tagcloud = isset($args['show_tagcloud']) ? $args['show_tagcloud'] : (($hierarchical === true) ? false : true);
+        $post_types = isset($args['post_types']) ? $args['post_types'] : array();
+        $slug = isset($args['slug']) ? $args['slug'] : '';
+        $private = isset($args['private']) ? $args['private'] : false;
         if(empty($singular_name)) {
             $singular_name = $name;
         }
@@ -1135,33 +1173,45 @@ class SB_Core {
             return;
         }
         $labels = array(
-            'name'                       => $name,
-            'singular_name'              => $singular_name,
-            'menu_name'                  => $name,
-            'all_items'                  => sprintf(__( 'All %s', 'sb-core' ), $name),
-            'parent_item'                => sprintf(__( 'Parent %s', 'sb-core' ), $singular_name),
-            'parent_item_colon'          => sprintf(__( 'Parent %s:', 'sb-core' ), $singular_name),
-            'new_item_name'              => sprintf(__( 'New %s Name', 'sb-core' ), $singular_name),
-            'add_new_item'               => sprintf(__( 'Add New %s', 'sb-core' ), $singular_name),
-            'edit_item'                  => sprintf(__( 'Edit %s', 'sb-core' ), $singular_name),
-            'update_item'                => sprintf(__( 'Update %s', 'sb-core' ), $singular_name),
-            'separate_items_with_commas' => sprintf(__( 'Separate %s with commas', 'sb-core' ), SB_PHP::lowercase($name)),
-            'search_items'               => sprintf(__( 'Search %s', 'sb-core' ), $name),
-            'add_or_remove_items'        => sprintf(__( 'Add or remove %s', 'sb-core' ), $name),
-            'choose_from_most_used'      => sprintf(__( 'Choose from the most used %s', 'sb-core' ), $name),
-            'not_found'                  => __( 'Not Found', 'sb-core' ),
+            'name' => $name,
+            'singular_name' => $singular_name,
+            'menu_name' => $name,
+            'all_items' => sprintf(__( 'All %s', 'sb-theme' ), $name),
+            'edit_item' => sprintf(__( 'Edit %s', 'sb-theme' ), $singular_name),
+            'view_item' => sprintf(__('View %s', 'sb-theme'), $singular_name),
+            'update_item' => sprintf(__( 'Update %s', 'sb-theme' ), $singular_name),
+            'add_new_item' => sprintf(__( 'Add New %s', 'sb-theme' ), $singular_name),
+            'new_item_name' => sprintf(__( 'New %s Name', 'sb-theme' ), $singular_name),
+            'parent_item' => sprintf(__( 'Parent %s', 'sb-theme' ), $singular_name),
+            'parent_item_colon' => sprintf(__( 'Parent %s:', 'sb-theme' ), $singular_name),
+            'search_items' => sprintf(__( 'Search %s', 'sb-theme' ), $name),
+            'popular_items' => sprintf(__('Popular %s', 'sb-theme'), $name),
+            'separate_items_with_commas' => sprintf(__( 'Separate %s with commas', 'sb-theme' ), SB_PHP::lowercase($name)),
+            'add_or_remove_items' => sprintf(__( 'Add or remove %s', 'sb-theme' ), $name),
+            'choose_from_most_used' => sprintf(__( 'Choose from the most used %s', 'sb-theme' ), $name),
+            'not_found' => __( 'Not Found', 'sb-theme' ),
         );
-        unset($args);
+        $rewrite = isset($args['rewrite']) ? $args['rewrite'] : array();
+        $rewrite_slug = str_replace('_', '-', $slug);
+        $rewrite['slug'] = $rewrite_slug;
+        if($private) {
+            $public = false;
+            $rewrite = false;
+        }
+        $update_count_callback = isset($args['update_count_callback']) ? $args['update_count_callback'] : '_update_post_term_count';
+        $capabilities = isset($args['capabilities']) ? $args['capabilities'] : array('manage_terms');
         $args = array(
-            'labels'                     => $labels,
-            'hierarchical'               => $hierarchical,
-            'public'                     => $public,
-            'show_ui'                    => $show_ui,
-            'show_admin_column'          => $show_admin_column,
-            'show_in_nav_menus'          => $show_in_nav_menus,
-            'show_tagcloud'              => $show_tagcloud,
+            'labels' => $labels,
+            'hierarchical' => $hierarchical,
+            'public' => $public,
+            'show_ui' => $show_ui,
+            'show_admin_column' => $show_admin_column,
+            'show_in_nav_menus' => $show_in_nav_menus,
+            'show_tagcloud' => $show_tagcloud,
             'query_var' => true,
-            'rewrite' => array('slug' => $slug)
+            'rewrite' => $rewrite,
+            'update_count_callback' => $update_count_callback,
+            'capabilities' => $capabilities
         );
         register_taxonomy($slug, $post_types, $args);
     }

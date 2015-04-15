@@ -4,7 +4,7 @@ Plugin Name: SB Core
 Plugin URI: http://hocwp.net/
 Description: SB Core is not only a plugin, it contains core function for all plugins and themes that are created by SB Team.
 Author: SB Team
-Version: 1.6.4
+Version: 1.6.5
 Author URI: http://hocwp.net/
 Text Domain: sb-core
 Domain Path: /languages/
@@ -40,11 +40,12 @@ function sb_core_theme_support_message() {
     <div class="updated" id="message"><p><strong>Note:</strong> Plugin <strong>SB Core</strong> has been deactivated because current theme doesn't need it any more.</p></div>
     <?php
     sb_core_deactivate_all_sb_plugins();
+    delete_transient('sb_core_error');
 }
 
 $sb_theme_version = get_option('sb_theme_version');
 
-if(defined('SB_CORE_VERSION') || (defined('SB_THEME_VERSION') && version_compare(SB_THEME_VERSION, '1.7.0', '>=')) || (!empty($sb_theme_version) && version_compare($sb_theme_version, '1.7.0', '>='))) {
+if(!(bool)get_option('sb_theme_use_old_version') && (defined('SB_CORE_VERSION') || (defined('SB_THEME_VERSION') && version_compare(SB_THEME_VERSION, '1.7.0', '>=')) || (!empty($sb_theme_version) && version_compare($sb_theme_version, '1.7.0', '>=')))) {
     set_transient('sb_core_error', 1, MINUTE_IN_SECONDS);
     add_action('admin_notices', 'sb_core_theme_support_message');
     return;
