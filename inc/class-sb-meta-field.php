@@ -23,7 +23,7 @@ class SB_Meta_Field {
             <label for="<?php echo esc_attr($name); ?>"><?php echo $label; ?>:</label>
             <input type="text" id="<?php echo esc_attr($name); ?>" placeholder="<?php echo $placeholder; ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo $value; ?>" class="<?php echo $field_class; ?>">
         </p>
-        <?php
+    <?php
     }
 
     public static function datetime($args = array()) {
@@ -63,18 +63,18 @@ class SB_Meta_Field {
         );
         global $post;
         $tmp = $post;
-        $query = new WP_Query($query_args);
+        $query = SB_Query::get($query_args);
         if($query->have_posts()) :
-        ?>
-        <p>
-            <label for="<?php echo esc_attr($name); ?>"><?php echo $label; ?>:</label>
-            <select class="<?php echo $field_class; ?>" id="<?php echo esc_attr($name); ?>" name="<?php echo esc_attr($name); ?>" autocomplete="off">
-                <option value="0" <?php selected(0, get_the_ID()); ?>>--<?php _e('Choose', 'sb-core'); ?>&nbsp;<?php echo SB_PHP::uppercase_first_char($post_type); ?>--</option>
-                <?php while($query->have_posts()) : $query->the_post(); ?>
-                    <option value="<?php the_ID(); ?>" <?php selected($value, get_the_ID()); ?>><?php the_title(); ?></option>
-                <?php endwhile; wp_reset_postdata(); ?>
-            </select>
-        </p>
+            ?>
+            <p>
+                <label for="<?php echo esc_attr($name); ?>"><?php echo $label; ?>:</label>
+                <select class="<?php echo $field_class; ?>" id="<?php echo esc_attr($name); ?>" name="<?php echo esc_attr($name); ?>" autocomplete="off">
+                    <option value="0" <?php selected(0, get_the_ID()); ?>>--<?php _e('Choose', 'sb-theme'); ?>&nbsp;<?php echo SB_PHP::uppercase_first_char($post_type); ?>--</option>
+                    <?php while($query->have_posts()) : $query->the_post(); ?>
+                        <option value="<?php the_ID(); ?>" <?php selected($value, get_the_ID()); ?>><?php the_title(); ?></option>
+                    <?php endwhile; wp_reset_postdata(); ?>
+                </select>
+            </p>
         <?php endif;
         $post = $tmp;
     }
@@ -111,13 +111,13 @@ class SB_Meta_Field {
         <<?php echo $tag; ?> class="<?php echo $container_class; ?>">
             <label for="<?php echo esc_attr($name); ?>" class="display-block"><?php echo $label; ?>:</label>
             <?php SB_Field::media_upload_group($args); ?>
-            <?php if($preview) : ?>
-                <div class="<?php echo $image_preview_class; ?>">
-                    <?php if(!empty($value)) : ?>
-                        <img src="<?php echo $value; ?>" alt="">
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
+        <?php if($preview) : ?>
+            <div class="<?php echo $image_preview_class; ?>">
+                <?php if(!empty($value)) : ?>
+                    <img src="<?php echo $value; ?>" alt="">
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
         </<?php echo $tag; ?>>
     <?php
     }

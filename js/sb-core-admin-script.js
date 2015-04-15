@@ -356,7 +356,7 @@ var sb_ajax_loader;
                         sortable_active_list.css({'height': 'auto'});
                     }
                     single_ui_order = sortable_container.find('input.ui-item-order');
-                    sortable_connect_active = sortable_container.find('input.active-sortalbe-value');
+                    sortable_connect_active = sortable_container.find('input.active-sortable-value');
                     if(single_ui_order.length) {
                         sortable_container.find('ul.sb-sortable-list li').each(function(i, el){
                             var p = $(el).find('.ui-item-id').val();
@@ -376,7 +376,7 @@ var sb_ajax_loader;
                             }
                         });
                         data = data.slice(0, -1);
-                        sortable_container.find('.active-sortalbe-value').val(data);
+                        sortable_connect_active.val(data);
                     }
                 }
             }).disableSelection();

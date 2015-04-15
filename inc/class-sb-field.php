@@ -291,7 +291,7 @@ class SB_Field {
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <input type="hidden" class="active-sortalbe-value" name="sb_options[theme][<?php echo $option_name; ?>]" value="<?php echo $terms; ?>">
+            <input type="hidden" class="active-sortable-value" name="sb_options[theme][<?php echo $option_name; ?>]" value="<?php echo $terms; ?>">
         </div>
         <p class="description" style="clear: both"><?php _e('Drag and drop the widget into right box to active it.', 'sb-theme'); ?></p>
         <?php

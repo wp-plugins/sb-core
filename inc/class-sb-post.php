@@ -12,6 +12,10 @@ class SB_Post {
         return $result;
     }
 
+    public static function get_media_url($media_id) {
+        return wp_get_attachment_url($media_id);
+    }
+
     public static function get_comment_number($post_id = '') {
         $comment_number = get_comments_number($post_id);
         if($comment_number == 1) {
@@ -210,7 +214,7 @@ class SB_Post {
             'post_type' => $post_type,
             'posts_per_page' => -1
         );
-        return new WP_Query($args);
+        return SB_Query::get($args);
     }
 
     public static function get_thumbnail_url($args = array()) {
@@ -334,7 +338,7 @@ class SB_Post {
         <div class="post-thumbnail">
             <a href="<?php echo get_permalink($post_id); ?>"><?php echo $thumbnail_url; ?></a>
         </div>
-        <?php
+    <?php
     }
 
     public static function the_thumbnail_only_link_image_html($args = array()) {
@@ -347,7 +351,7 @@ class SB_Post {
         }
         ?>
         <a href="<?php echo get_permalink($post_id); ?>"><?php echo $thumbnail_url; ?></a>
-        <?php
+    <?php
     }
 
     public static function the_thumbnail_only_image_html($args = array()) {
@@ -483,7 +487,7 @@ class SB_Post {
             <span class="comments-link post-comment">
                 <i class="fa fa-comments icon-left"></i>
                 <a href="<?php echo $comment_link; ?>">
-                    <?php echo '<span class="count">' . $comment_number . '</span> <span class="text">' . __('bình  luận', 'sb-core') . '</span>'; ?>
+                    <?php echo '<span class="count">' . $comment_number . '</span> <span class="text">' . __('bình  luận', 'sb-theme') . '</span>'; ?>
                 </a>
             </span>
         <?php endif;
@@ -627,7 +631,7 @@ class SB_Post {
         }
         ?>
         <div class="<?php echo $class; ?>"><?php SB_Post::the_temperature($post_id); ?></div>
-        <?php
+    <?php
     }
 
     public static function get_temperature($post_id) {
@@ -826,10 +830,10 @@ class SB_Post {
     public static function the_term_html($post_id, $taxonomy) {
         $terms = get_the_terms($post_id, $taxonomy);
         if($terms && ! is_wp_error($terms)) : ?>
-        <span class="cat-links">
-		        <span class="entry-utility-prep"><?php _e('Chuyên mục:', 'sb-core'); ?> </span>
-            <?php the_terms($post_id, $taxonomy); ?>
+            <span class="cat-links">
+		        <span class="entry-utility-prep"><?php _e('Chuyên mục:', 'sb-theme'); ?> </span>
+                <?php the_terms($post_id, $taxonomy); ?>
             </span>
-    <?php endif;
+        <?php endif;
     }
 }
