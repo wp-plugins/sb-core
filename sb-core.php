@@ -4,7 +4,7 @@ Plugin Name: SB Core
 Plugin URI: http://hocwp.net/
 Description: SB Core is not only a plugin, it contains core function for all plugins and themes that are created by SB Team.
 Author: SB Team
-Version: 1.6.7
+Version: 1.6.8
 Author URI: http://hocwp.net/
 Text Domain: sb-core
 Domain Path: /languages/
@@ -51,7 +51,7 @@ if(!(bool)get_option('sb_theme_use_old_version') && (defined('SB_CORE_VERSION') 
     return;
 }
 
-define( 'SB_CORE_VERSION', '1.6.7' );
+define( 'SB_CORE_VERSION', '1.6.8' );
 
 define( 'SB_CORE_FILE', __FILE__ );
 

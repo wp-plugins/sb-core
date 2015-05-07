@@ -327,7 +327,7 @@ class SB_Post {
     }
 
     public static function the_thumbnail_html($args = array()) {
-        $post_id = get_the_ID();
+        $post_id = isset($args['post_id']) ? $args['post_id'] : get_the_ID();
         $thumbnail_url = isset($args['thumbnail_url']) ? $args['thumbnail_url'] : '';
         if(empty($thumbnail_url)) {
             $thumbnail_url = self::get_thumbnail_html($args);
